@@ -1,0 +1,27 @@
+.black {
+  background-color: rgb(114, 114, 114);
+}
+
+.card {
+  background-color: rgb(255, 167, 167);
+}
+
+.square {
+  width: 2rem;
+  height: 2rem;
+  font-size: 2rem;
+  line-height: 1;
+  user-select: none;
+}
+
+.row {
+  display: flex;
+}
+
+#board {
+  display: flex;
+  flex-direction: column;
+
+  border: 1px solid rgb(0, 0, 0);
+  width: fit-content;
+}
