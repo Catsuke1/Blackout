@@ -1,8 +1,9 @@
 import { Board } from "./Board";
 import { getValidQueenMoves, isMoveValid } from "./Chess";
 import { Action, Color, GameSettings, Position, SquareTypes } from "./types";
+import { EventEmitter } from "events";
 
-export class Game {
+export class Game extends EventEmitter {
   gameSettings: GameSettings;
   board: Board;
 
@@ -15,9 +16,9 @@ export class Game {
     validMoves: Position[];
   };
 
-  gameover: boolean;
-
   constructor(gameSettings: GameSettings, board: Board) {
+    super();
+
     this.gameSettings = gameSettings;
     this.board = board;
 
@@ -29,8 +30,6 @@ export class Game {
       position: undefined,
       validMoves: undefined,
     };
-
-    this.gameover = false;
 
     // setup initial pieces
     for (const whitePiece of this.gameSettings.start.pieces.white) {
@@ -113,6 +112,12 @@ export class Game {
     this.displayTurnStatus();
   }
 
+  disableSquaresOnclick() {
+    this.board.forEachSquare((square, position) => {
+      square.element.onclick = () => {};
+    });
+  }
+
   setActivePiece(position: Position, validMoves: Position[]) {
     this.activePiece.wasClicked = true;
     this.activePiece.position = position;
@@ -137,9 +142,17 @@ export class Game {
 
     const gameCondition = this.checkGameCondition();
 
-    if (this.gameover) {
+    if (gameCondition !== "nowin") {
       const winnerElement = document.getElementById("winner");
-      winnerElement.innerText = gameCondition;
+
+      if (gameCondition === "whitewin") {
+        winnerElement.innerText = "White wins!";
+      } else if (gameCondition === "blackwin") {
+        winnerElement.innerText = "Black wins!";
+      }
+
+      this.disableSquaresOnclick();
+      this.emit("gameover");
     }
   }
 
@@ -172,18 +185,15 @@ export class Game {
     }
 
     if (whiteLost && blackLost) {
-      this.gameover = true;
       if (this.turnColor === "white") return "blackwin";
       return "whitewin";
     }
 
     if (whiteLost) {
-      this.gameover = true;
       return "blackwin";
     }
 
     if (blackLost) {
-      this.gameover = true;
       return "whitewin";
     }
 

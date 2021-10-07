@@ -54,3 +54,7 @@ const board = new Board(squareElements);
 
 // create game
 window.game = new Game(gameSettings, board);
+
+window.game.on("gameover", () => {
+  document.body.style.backgroundColor = "blue";
+});
