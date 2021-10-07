@@ -49,4 +49,30 @@ export class Board {
     destinationSquare.setType(originSquare.type);
     originSquare.setType(SquareTypes.Empty);
   }
+
+  getQueens() {
+    const queens: {
+      white: {
+        row: number;
+        column: number;
+      }[];
+      black: {
+        row: number;
+        column: number;
+      }[];
+    } = {
+      white: [],
+      black: [],
+    };
+
+    forEach2d(this.squares, (square, row, column) => {
+      if (square.type === SquareTypes.WhitePiece) {
+        queens.white.push({ row: row, column: column });
+      } else if (square.type === SquareTypes.BlackPiece) {
+        queens.black.push({ row: row, column: column });
+      }
+    });
+
+    return queens;
+  }
 }

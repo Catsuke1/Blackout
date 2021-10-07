@@ -1,10 +1,10 @@
-import { board, gameState } from "./app";
+import { board, game } from "./app";
 import { getValidQueenMoves, isValidMove } from "./Chess";
 
 export enum SquareTypes {
   Empty,
-  WhiteFigure,
-  BlackFigure,
+  WhitePiece,
+  BlackPiece,
   Card,
 }
 
@@ -30,55 +30,87 @@ export class Square {
 
       switch (this.type) {
         case SquareTypes.Empty:
-          if (gameState.figure.wasClicked) {
-            if (
-              isValidMove(
-                {
-                  row: this.row,
-                  column: this.col,
-                },
-                gameState.figure.validMoves
-              )
-            ) {
-              board.movePiece(gameState.figure.position, {
-                row: this.row,
-                column: this.col,
-              });
-            }
-
-            board.clearSquares();
-
-            gameState.figure.wasClicked = false;
-          } else {
+          if (game.turnType === "card") {
             this.setType(SquareTypes.Card);
+
+            game.nextTurn();
           }
 
+          if (game.turnType === "piece") {
+            if (game.figure.wasClicked) {
+              if (
+                isValidMove(
+                  {
+                    row: this.row,
+                    column: this.col,
+                  },
+                  game.figure.validMoves
+                )
+              ) {
+                board.movePiece(game.figure.position, {
+                  row: this.row,
+                  column: this.col,
+                });
+
+                board.clearSquares();
+
+                game.nextTurn();
+              } else {
+                board.clearSquares();
+
+                game.resetPiece();
+              }
+            }
+          }
           break;
 
-        case SquareTypes.BlackFigure:
-        case SquareTypes.WhiteFigure:
-          if (gameState.figure.wasClicked) {
-            if (
-              gameState.figure.position.row === this.row &&
-              gameState.figure.position.column === this.col
-            ) {
-              board.clearSquares();
+        case SquareTypes.Card:
+          board.clearSquares();
 
-              gameState.figure.wasClicked = false;
+          game.resetPiece();
+          break;
+
+        case SquareTypes.BlackPiece:
+          if (game.turnType === "piece") {
+            if (game.turn === "black") {
+              if (game.figure.wasClicked) {
+                board.clearSquares();
+
+                game.resetPiece();
+              } else {
+                const validMoves = getValidQueenMoves(
+                  board.squares,
+                  this.row,
+                  this.col
+                );
+
+                board.showValidMoves(validMoves);
+
+                game.setPiece(this.row, this.col, validMoves);
+              }
             }
-          } else {
-            const validMoves = getValidQueenMoves(
-              board.squares,
-              this.row,
-              this.col
-            );
+          }
+          break;
 
-            board.showValidMoves(validMoves);
+        case SquareTypes.WhitePiece:
+          if (game.turnType === "piece") {
+            if (game.turn === "white") {
+              if (game.figure.wasClicked) {
+                board.clearSquares();
 
-            gameState.figure.wasClicked = true;
-            gameState.figure.position.row = this.row;
-            gameState.figure.position.column = this.col;
-            gameState.figure.validMoves = validMoves;
+                game.resetPiece();
+              } else {
+                const validMoves = getValidQueenMoves(
+                  board.squares,
+                  this.row,
+                  this.col
+                );
+
+                board.showValidMoves(validMoves);
+
+                game.setPiece(this.row, this.col, validMoves);
+              }
+            }
           }
           break;
       }
@@ -97,11 +129,11 @@ export class Square {
         this.element.classList.add("card");
         break;
 
-      case SquareTypes.WhiteFigure:
+      case SquareTypes.WhitePiece:
         this.element.innerText = "♕";
         break;
 
-      case SquareTypes.BlackFigure:
+      case SquareTypes.BlackPiece:
         this.element.innerText = "♛";
         break;
     }
