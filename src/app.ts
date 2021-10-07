@@ -1,28 +1,49 @@
 import { Board } from "./game/Board";
 import { Game } from "./game/Game";
 import { createSquareElements } from "./index";
-import { SquareTypes } from "./game/Square";
 
-export const gameSettings = {
-  width: 8,
-  height: 8,
+const gameSettings: GameSettings = {
+  rows: 8,
+  columns: 8,
+
+  start: {
+    pieces: {
+      white: [
+        {
+          row: 0,
+          column: 2,
+        },
+        {
+          row: 0,
+          column: 4,
+        },
+      ],
+      black: [
+        {
+          row: 7,
+          column: 3,
+        },
+        {
+          row: 7,
+          column: 5,
+        },
+      ],
+    },
+
+    color: "white",
+    action: "piece",
+  },
 };
 
 // create square elements
 const squareElements = createSquareElements(
-  gameSettings.width,
-  gameSettings.height,
+  gameSettings.rows,
+  gameSettings.columns,
   document.getElementById("board")
 );
 
 // create board
-export const board = new Board(squareElements);
+const board = new Board(squareElements);
 
-// place initial pieces
-board.squares[0][2].setType(SquareTypes.WhitePiece);
-board.squares[0][4].setType(SquareTypes.WhitePiece);
-
-board.squares[7][3].setType(SquareTypes.BlackPiece);
-board.squares[7][5].setType(SquareTypes.BlackPiece);
-
-export const game = new Game("white", "piece");
+// create game
+const game = new Game(gameSettings, board);

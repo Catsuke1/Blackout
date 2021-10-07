@@ -1,21 +1,7 @@
-.black {
-  background-color: rgb(114, 114, 114);
-}
-
-.card {
-  background-color: rgb(255, 167, 167);
-}
-
-.square {
-  width: 2rem;
-  height: 2rem;
-  font-size: 2rem;
-  line-height: 1;
-  user-select: none;
-}
-
-.row {
+#app {
   display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 #board {
@@ -26,8 +12,22 @@
   width: fit-content;
 }
 
-#app {
+.row {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+}
+
+.square {
+  width: 2rem;
+  height: 2rem;
+  font-size: 2rem;
+  line-height: 1;
+  user-select: none;
+}
+
+.black {
+  background-color: rgb(114, 114, 114);
+}
+
+.card {
+  background-color: rgb(255, 167, 167);
 }

@@ -18,58 +18,52 @@ export class Board {
     });
   }
 
-  showValidMoves(
-    validMoves: {
-      row: number;
-      column: number;
-    }[]
-  ) {
-    this.clearSquares();
+  getSquare(position: Position) {
+    return this.squares[position.row][position.column];
+  }
 
-    for (const move of validMoves) {
-      this.squares[move.row][move.column].element.innerText = "X";
+  forEachSquare(fn: (square: Square, position: Position) => void) {
+    forEach2d(this.squares, (square, row, column) => {
+      fn(square, { row: row, column: column });
+    });
+  }
+
+  highlightValidMoves(validMoves: Position[]) {
+    for (const validMove of validMoves) {
+      this.getSquare(validMove).setHighlight(true);
     }
   }
 
-  clearSquares() {
-    forEach2d(this.squares, (square, row, col) => {
-      if (square.type === SquareTypes.Empty) {
-        square.element.innerText = "";
+  clearHighlights() {
+    this.forEachSquare((square, position) => {
+      if (square.highlight) {
+        square.setHighlight(false);
       }
     });
   }
 
-  movePiece(
-    origin: { row: number; column: number },
-    destination: { row: number; column: number }
-  ) {
-    const originSquare = this.squares[origin.row][origin.column];
-    const destinationSquare = this.squares[destination.row][destination.column];
+  movePiece(origin: Position, destination: Position) {
+    const originSquare = this.getSquare(origin);
+    const destinationSquare = this.getSquare(destination);
 
     destinationSquare.setType(originSquare.type);
     originSquare.setType(SquareTypes.Empty);
   }
 
-  getQueens() {
+  getQueenPositions() {
     const queens: {
-      white: {
-        row: number;
-        column: number;
-      }[];
-      black: {
-        row: number;
-        column: number;
-      }[];
+      white: Position[];
+      black: Position[];
     } = {
       white: [],
       black: [],
     };
 
-    forEach2d(this.squares, (square, row, column) => {
+    this.forEachSquare((square, position) => {
       if (square.type === SquareTypes.WhitePiece) {
-        queens.white.push({ row: row, column: column });
+        queens.white.push(position);
       } else if (square.type === SquareTypes.BlackPiece) {
-        queens.black.push({ row: row, column: column });
+        queens.black.push(position);
       }
     });
 

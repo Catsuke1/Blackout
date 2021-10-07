@@ -1,68 +1,51 @@
-import { board } from "../app";
+import { Board } from "./Board";
 import { getValidQueenMoves } from "./Chess";
 
 export class Game {
+  gameSettings: GameSettings;
+  board: Board;
+
+  turnColor: Color;
+  turnAction: Action;
+
   figure: {
     wasClicked: boolean;
-    position: {
-      row: number;
-      column: number;
-    };
-    validMoves: { row: number; column: number }[];
+    position: Position;
+    validMoves: Position[];
   };
-
-  startingColor: "black" | "white";
-
-  turn: "black" | "white";
-  turnType: "card" | "piece";
 
   gameover: boolean;
 
-  constructor(turn: "black" | "white", turnType: "card" | "piece") {
-    this.figure = {
-      wasClicked: false,
-      position: {
-        row: undefined,
-        column: undefined,
-      },
-      validMoves: undefined,
-    };
+  constructor(gameSettings: GameSettings, board: Board) {
+    this.gameSettings = gameSettings;
+    this.board = board;
 
-    this.startingColor = turn;
-    this.turn = turn;
-    this.turnType = turnType;
-
-    this.displayTurnStatus();
+    this.turnColor = this.gameSettings.start.color;
+    this.turnAction = this.gameSettings.start.action;
 
     this.gameover = false;
+
+    this.resetPiece();
+    this.displayTurnStatus();
   }
 
-  setPiece(
-    row: number,
-    column: number,
-    validMoves: {
-      row: number;
-      column: number;
-    }[]
-  ) {
+  setPiece(position: Position, validMoves: Position[]) {
     this.figure.wasClicked = true;
-    this.figure.position.row = row;
-    this.figure.position.column = column;
+    this.figure.position = position;
     this.figure.validMoves = validMoves;
   }
 
   resetPiece() {
     this.figure.wasClicked = false;
-    this.figure.position.row = undefined;
-    this.figure.position.column = undefined;
+    this.figure.position = undefined;
     this.figure.validMoves = undefined;
   }
 
   nextTurn() {
-    this.turn = this.turn === "black" ? "white" : "black";
+    this.turnColor = this.turnColor === "black" ? "white" : "black";
 
-    if (this.turn === this.startingColor) {
-      this.turnType = this.turnType === "card" ? "piece" : "card";
+    if (this.turnColor === this.gameSettings.start.color) {
+      this.turnAction = this.turnAction === "card" ? "piece" : "card";
     }
 
     this.resetPiece();
@@ -80,20 +63,23 @@ export class Game {
     const turnElement = document.getElementById("turn");
     const turnTypeElement = document.getElementById("turnType");
 
-    turnElement.innerText = this.turn;
-    turnTypeElement.innerText = this.turnType;
+    turnElement.innerText = this.turnColor;
+    turnTypeElement.innerText = this.turnAction;
   }
 
   checkGameCondition() {
-    const queens = board.getQueens();
+    const queens = this.board.getQueenPositions();
 
     let whiteLost = true;
     let blackLost = true;
 
     for (const whiteQueen of queens.white) {
       if (
-        getValidQueenMoves(board.squares, whiteQueen.row, whiteQueen.column)
-          .length !== 0
+        getValidQueenMoves(
+          this.board.squares,
+          whiteQueen.row,
+          whiteQueen.column
+        ).length !== 0
       ) {
         whiteLost = false;
         break;
@@ -102,8 +88,11 @@ export class Game {
 
     for (const blackQueen of queens.black) {
       if (
-        getValidQueenMoves(board.squares, blackQueen.row, blackQueen.column)
-          .length !== 0
+        getValidQueenMoves(
+          this.board.squares,
+          blackQueen.row,
+          blackQueen.column
+        ).length !== 0
       ) {
         blackLost = false;
         break;
@@ -112,7 +101,7 @@ export class Game {
 
     if (whiteLost && blackLost) {
       this.gameover = true;
-      if (this.turn === "white") return "blackwin";
+      if (this.turnColor === "white") return "blackwin";
       return "whitewin";
     }
 

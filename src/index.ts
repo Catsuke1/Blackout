@@ -1,11 +1,11 @@
 import { forEach2d, make2dArray } from "./utils";
 
 export function createSquareElements(
-  width: number,
-  height: number,
+  rows: number,
+  columns: number,
   boardElement: HTMLElement
 ) {
-  const squareElements = make2dArray<HTMLElement>(width, height);
+  const squareElements = make2dArray<HTMLElement>(rows, columns);
 
   let isBlack = false;
   let rowElement = document.createElement("div");

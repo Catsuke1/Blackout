@@ -1,4 +1,3 @@
-import { board, game } from "../app";
 import { getValidQueenMoves, isValidMove } from "./Chess";
 
 export enum SquareTypes {
@@ -9,10 +8,11 @@ export enum SquareTypes {
 }
 
 export class Square {
-  row: number;
-  col: number;
-  element: HTMLElement;
   type: SquareTypes;
+
+  element: HTMLElement;
+
+  highlight: boolean;
 
   constructor(
     row: number,
@@ -30,13 +30,13 @@ export class Square {
 
       switch (this.type) {
         case SquareTypes.Empty:
-          if (game.turnType === "card") {
+          if (game.turnAction === "card") {
             this.setType(SquareTypes.Card);
 
             game.nextTurn();
           }
 
-          if (game.turnType === "piece") {
+          if (game.turnAction === "piece") {
             if (game.figure.wasClicked) {
               if (
                 isValidMove(
@@ -71,8 +71,8 @@ export class Square {
           break;
 
         case SquareTypes.BlackPiece:
-          if (game.turnType === "piece") {
-            if (game.turn === "black") {
+          if (game.turnAction === "piece") {
+            if (game.turnColor === "black") {
               if (game.figure.wasClicked) {
                 board.clearSquares();
 
@@ -93,8 +93,8 @@ export class Square {
           break;
 
         case SquareTypes.WhitePiece:
-          if (game.turnType === "piece") {
-            if (game.turn === "white") {
+          if (game.turnAction === "piece") {
+            if (game.turnColor === "white") {
               if (game.figure.wasClicked) {
                 board.clearSquares();
 
@@ -115,6 +115,16 @@ export class Square {
           break;
       }
     };
+  }
+
+  setHighlight(flag: boolean) {
+    this.highlight = flag;
+
+    if (this.highlight) {
+      this.element.innerText = "X";
+    } else {
+      this.element.innerText = "";
+    }
   }
 
   setType(type: SquareTypes) {
