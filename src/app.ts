@@ -9,6 +9,10 @@ declare global {
   }
 }
 
+document.getElementById("newGame").onclick = () => {
+  createNewGame();
+};
+
 const gameSettings: GameSettings = {
   rows: 8,
   columns: 8,
@@ -42,19 +46,22 @@ const gameSettings: GameSettings = {
   },
 };
 
-// create square elements
-const squareElements = createSquareElements(
-  gameSettings.rows,
-  gameSettings.columns,
-  document.getElementById("board")
-);
+createNewGame();
 
-// create board
-const board = new Board(squareElements);
+function createNewGame() {
+  document.getElementById("board").textContent = "";
 
-// create game
-window.game = new Game(gameSettings, board);
+  const squareElements = createSquareElements(
+    gameSettings.rows,
+    gameSettings.columns,
+    document.getElementById("board")
+  );
 
-window.game.on("gameover", () => {
-  document.body.style.backgroundColor = "blue";
-});
+  const board = new Board(squareElements);
+
+  window.game = new Game(gameSettings, board);
+
+  window.game.on("gameover", () => {
+    console.log("gameover");
+  });
+}

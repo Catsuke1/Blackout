@@ -16,13 +16,7 @@ export class Square {
   setHighlight(flag: boolean) {
     this.highlight = flag;
 
-    if (this.highlight) {
-      this.element.innerText = "X";
-    } else {
-      if (this.type === SquareTypes.Empty) {
-        this.element.innerText = "";
-      }
-    }
+    this.element.classList.toggle("highlight", this.highlight);
   }
 
   setType(type: SquareTypes) {

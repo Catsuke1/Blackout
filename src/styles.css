@@ -1,7 +1,23 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: aliceblue;
+}
+
 #app {
+  position: relative;
+  top: 10vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+#settings {
+  margin: 0.5rem;
 }
 
 #board {
@@ -9,6 +25,7 @@
   flex-direction: column;
 
   border: 1px solid rgb(0, 0, 0);
+  border-radius: 2px;
   width: fit-content;
 }
 
@@ -22,12 +39,22 @@
   font-size: 2rem;
   line-height: 1;
   user-select: none;
+
+  background-color: #eeeed2;
 }
 
 .black {
-  background-color: rgb(114, 114, 114);
+  background-color: #769656;
 }
 
 .card {
   background-color: rgb(255, 167, 167);
+}
+
+.highlight.black {
+  background-color: #d46c51;
+}
+
+.highlight {
+  background-color: #ec7e6a;
 }
