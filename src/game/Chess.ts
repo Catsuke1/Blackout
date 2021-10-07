@@ -1,17 +1,10 @@
-import { Square, SquareTypes } from "./Square";
+import { Board } from "./Board";
+import { toPos } from "./typeHelpers";
+import { Position, SquareTypes } from "./types";
 
-export function isValidMove(
-  square: {
-    row: number;
-    column: number;
-  },
-  validMoves: {
-    row: number;
-    column: number;
-  }[]
-) {
-  for (const move of validMoves) {
-    if (square.row === move.row && square.column === move.column) {
+export function isMoveValid(move: Position, validMoves: Position[]) {
+  for (const validMove of validMoves) {
+    if (move.row === validMove.row && move.column === validMove.column) {
       return true;
     }
   }
@@ -19,81 +12,115 @@ export function isValidMove(
   return false;
 }
 
-export function getValidQueenMoves(
-  board: Square[][],
-  queenRow: number,
-  queenCol: number
-) {
-  const width = board[0].length;
-  const height = board.length;
-
-  const validMoves: {
-    row: number;
-    column: number;
-  }[] = [];
+export function getValidQueenMoves(board: Board, queenPosition: Position) {
+  const validMoves: Position[] = [];
 
   // top
-  for (let row = queenRow - 1; row > -1; row--) {
-    if (board[row][queenCol].type !== SquareTypes.Empty) break;
-    validMoves.push({ row: row, column: queenCol });
+  for (let row = queenPosition.row - 1; row > -1; row--) {
+    const squarePosition = toPos(row, queenPosition.column);
+
+    if (board.getSquare(squarePosition).type !== SquareTypes.Empty) {
+      break;
+    }
+
+    validMoves.push(squarePosition);
   }
 
   // bottom
-  for (let row = queenRow + 1; row < height; row++) {
-    if (board[row][queenCol].type !== SquareTypes.Empty) break;
-    validMoves.push({ row: row, column: queenCol });
+  for (let row = queenPosition.row + 1; row < board.rows; row++) {
+    const squarePosition = toPos(row, queenPosition.column);
+
+    if (board.getSquare(squarePosition).type !== SquareTypes.Empty) {
+      break;
+    }
+
+    validMoves.push(squarePosition);
   }
 
   // left
-  for (let col = queenCol - 1; col > -1; col--) {
-    if (board[queenRow][col].type !== SquareTypes.Empty) break;
-    validMoves.push({ row: queenRow, column: col });
+  for (let column = queenPosition.column - 1; column > -1; column--) {
+    const squarePosition = toPos(queenPosition.row, column);
+
+    if (board.getSquare(squarePosition).type !== SquareTypes.Empty) {
+      break;
+    }
+
+    validMoves.push(squarePosition);
   }
 
   // right
-  for (let col = queenCol + 1; col < width; col++) {
-    if (board[queenRow][col].type !== SquareTypes.Empty) break;
-    validMoves.push({ row: queenRow, column: col });
-  }
-
-  // diagonal top-right
   for (
-    let row = queenRow - 1, col = queenCol + 1;
-    row > -1 && col < width;
-    row--, col++
+    let column = queenPosition.column + 1;
+    column < board.columns;
+    column++
   ) {
-    if (board[row][col].type !== SquareTypes.Empty) break;
-    validMoves.push({ row: row, column: col });
+    const squarePosition = toPos(queenPosition.row, column);
+
+    if (board.getSquare(squarePosition).type !== SquareTypes.Empty) {
+      break;
+    }
+
+    validMoves.push(squarePosition);
   }
 
   // diagonal top-left
   for (
-    let row = queenRow - 1, col = queenCol - 1;
-    row > -1 && col > -1;
-    row--, col--
+    let row = queenPosition.row - 1, column = queenPosition.column - 1;
+    row > -1 && column > -1;
+    row--, column--
   ) {
-    if (board[row][col].type !== SquareTypes.Empty) break;
-    validMoves.push({ row: row, column: col });
+    const squarePosition = toPos(row, column);
+
+    if (board.getSquare(squarePosition).type !== SquareTypes.Empty) {
+      break;
+    }
+
+    validMoves.push(squarePosition);
   }
 
-  // diagonal bottom-right
+  // diagonal top-right
   for (
-    let row = queenRow + 1, col = queenCol + 1;
-    row < height && col < width;
-    row++, col++
+    let row = queenPosition.row - 1, column = queenPosition.column + 1;
+    row > -1 && column < board.columns;
+    row--, column++
   ) {
-    if (board[row][col].type !== SquareTypes.Empty) break;
-    validMoves.push({ row: row, column: col });
+    const squarePosition = toPos(row, column);
+
+    if (board.getSquare(squarePosition).type !== SquareTypes.Empty) {
+      break;
+    }
+
+    validMoves.push(squarePosition);
   }
 
   // diagonal bottom-left
   for (
-    let row = queenRow + 1, col = queenCol - 1;
-    row < height && col > -1;
-    row++, col--
+    let row = queenPosition.row + 1, column = queenPosition.column - 1;
+    row < board.rows && column > -1;
+    row++, column--
   ) {
-    if (board[row][col].type !== SquareTypes.Empty) break;
-    validMoves.push({ row: row, column: col });
+    const squarePosition = toPos(row, column);
+
+    if (board.getSquare(squarePosition).type !== SquareTypes.Empty) {
+      break;
+    }
+
+    validMoves.push(squarePosition);
+  }
+
+  // diagonal bottom-right
+  for (
+    let row = queenPosition.row + 1, column = queenPosition.column + 1;
+    row < board.rows && column < board.columns;
+    row++, column++
+  ) {
+    const squarePosition = toPos(row, column);
+
+    if (board.getSquare(squarePosition).type !== SquareTypes.Empty) {
+      break;
+    }
+
+    validMoves.push(squarePosition);
   }
 
   return validMoves;

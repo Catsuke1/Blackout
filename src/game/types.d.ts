@@ -1,13 +1,20 @@
-type Position = {
+export enum SquareTypes {
+  Empty,
+  WhitePiece,
+  BlackPiece,
+  Card,
+}
+
+export type Position = {
   row: number;
   column: number;
 };
 
-type Color = "white" | "black";
+export type Color = "white" | "black";
 
-type Action = "piece" | "card";
+export type Action = "piece" | "card";
 
-interface GameSettings {
+export interface GameSettings {
   rows: number;
   columns: number;
 

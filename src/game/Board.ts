@@ -1,5 +1,6 @@
-import { Square, SquareTypes } from "./Square";
 import { forEach2d, make2dArray } from "../utils";
+import { Square } from "./Square";
+import { Position, SquareTypes } from "./types";
 
 export class Board {
   rows: number;
@@ -14,7 +15,7 @@ export class Board {
     this.squares = make2dArray(this.rows, this.columns);
 
     forEach2d(squareElements, (element, row, col) => {
-      this.squares[row][col] = new Square(row, col, element, SquareTypes.Empty);
+      this.squares[row][col] = new Square(element, SquareTypes.Empty);
     });
   }
 

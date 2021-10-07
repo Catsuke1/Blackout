@@ -1,5 +1,6 @@
 import { Board } from "./Board";
 import { getValidQueenMoves } from "./Chess";
+import { Action, Color, GameSettings, Position } from "./types";
 
 export class Game {
   gameSettings: GameSettings;
