@@ -1,4 +1,4 @@
-import { board, game } from "./app";
+import { board, game } from "../app";
 import { getValidQueenMoves, isValidMove } from "./Chess";
 
 export enum SquareTypes {

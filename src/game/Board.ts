@@ -1,5 +1,5 @@
 import { Square, SquareTypes } from "./Square";
-import { forEach2d, make2dArray } from "./utils";
+import { forEach2d, make2dArray } from "../utils";
 
 export class Board {
   rows: number;

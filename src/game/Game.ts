@@ -1,4 +1,4 @@
-import { board } from "./app";
+import { board } from "../app";
 import { getValidQueenMoves } from "./Chess";
 
 export class Game {

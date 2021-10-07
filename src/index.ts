@@ -1,37 +1,35 @@
-import { forEach2d } from "./utils";
+import { forEach2d, make2dArray } from "./utils";
 
-export function createBoard(
+export function createSquareElements(
   width: number,
   height: number,
   boardElement: HTMLElement
 ) {
-  const squareElements: HTMLElement[][] = [];
+  const squareElements = make2dArray<HTMLElement>(width, height);
 
   let isBlack = false;
+  let rowElement = document.createElement("div");
 
-  for (let row = 0; row < height; row++) {
-    const rowElement = document.createElement("div");
-    boardElement.appendChild(rowElement);
+  forEach2d(squareElements, (element, row, column) => {
+    if (column === 0) {
+      rowElement = document.createElement("div");
+      boardElement.appendChild(rowElement);
 
-    rowElement.classList.add("row");
-
-    squareElements.push(new Array<HTMLElement>(width));
-
-    for (let col = 0; col < width; col++) {
-      const squareElement = document.createElement("div");
-      rowElement.appendChild(squareElement);
-
-      // css
-      if (isBlack) squareElement.classList.add("black");
-      squareElement.classList.add("square");
-
-      squareElements[row][col] = squareElement;
+      rowElement.classList.add("row");
 
       isBlack = !isBlack;
     }
 
+    const squareElement = document.createElement("div");
+    rowElement.appendChild(squareElement);
+
+    squareElement.classList.add("square");
+    if (isBlack) squareElement.classList.add("black");
+
+    squareElements[row][column] = squareElement;
+
     isBlack = !isBlack;
-  }
+  });
 
   return squareElements;
 }

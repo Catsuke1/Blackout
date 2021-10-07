@@ -8,11 +8,17 @@
     <script type="module" src="app.ts"></script>
   </head>
   <body>
-    <div id="board"></div>
+    <div id="app">
+      <h1>Blackout</h1>
 
-    <div id="turn"></div>
-    <div id="turnType"></div>
+      <div id="board"></div>
 
-    <div id="winner"></div>
+      <div id="gamestate">
+        <div>Turn: <span id="turn"></span></div>
+        <div>Action: <span id="turnType"></span></div>
+
+        <span id="winner"></span>
+      </div>
+    </div>
   </body>
 </html>

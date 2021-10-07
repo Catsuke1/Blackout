@@ -13,5 +13,8 @@
   "license": "ISC",
   "devDependencies": {
     "parcel": "latest"
+  },
+  "dependencies": {
+    "peerjs": "^1.3.2"
   }
 }

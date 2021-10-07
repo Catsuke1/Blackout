@@ -1,15 +1,17 @@
-import { Board } from "./Board";
-import { Game } from "./Game";
-import { createBoard } from "./index";
-import { SquareTypes } from "./Square";
+import { Board } from "./game/Board";
+import { Game } from "./game/Game";
+import { createSquareElements } from "./index";
+import { SquareTypes } from "./game/Square";
 
-const width = 8;
-const height = 8;
+export const gameSettings = {
+  width: 8,
+  height: 8,
+};
 
 // create square elements
-const squareElements = createBoard(
-  width,
-  height,
+const squareElements = createSquareElements(
+  gameSettings.width,
+  gameSettings.height,
   document.getElementById("board")
 );
 
