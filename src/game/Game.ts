@@ -75,10 +75,13 @@ export class Game extends EventEmitter {
             break;
 
           case SquareTypes.WhitePiece:
-            if (this.turnAction === "piece" && this.turnColor === "white") {
-              if (this.activePiece.wasClicked) {
-                this.board.clearHighlights();
+            this.board.clearHighlights();
 
+            if (this.turnAction === "piece" && this.turnColor === "white") {
+              if (
+                this.activePiece.wasClicked &&
+                this.activePiece.position === position
+              ) {
                 this.resetPiece();
               } else {
                 const validMoves = getValidQueenMoves(this.board, position);
@@ -91,10 +94,13 @@ export class Game extends EventEmitter {
             break;
 
           case SquareTypes.BlackPiece:
-            if (this.turnAction === "piece" && this.turnColor === "black") {
-              if (this.activePiece.wasClicked) {
-                this.board.clearHighlights();
+            this.board.clearHighlights();
 
+            if (this.turnAction === "piece" && this.turnColor === "black") {
+              if (
+                this.activePiece.wasClicked &&
+                this.activePiece.position === position
+              ) {
                 this.resetPiece();
               } else {
                 const validMoves = getValidQueenMoves(this.board, position);
