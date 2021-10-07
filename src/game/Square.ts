@@ -19,7 +19,9 @@ export class Square {
     if (this.highlight) {
       this.element.innerText = "X";
     } else {
-      this.element.innerText = "";
+      if (this.type === SquareTypes.Empty) {
+        this.element.innerText = "";
+      }
     }
   }
 
@@ -29,6 +31,10 @@ export class Square {
     this.element.classList.toggle("card", this.type === SquareTypes.Card);
 
     switch (this.type) {
+      case SquareTypes.Empty:
+        this.element.innerText = "";
+        break;
+
       case SquareTypes.WhitePiece:
         this.element.innerText = "♕";
         break;

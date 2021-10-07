@@ -1,6 +1,13 @@
 import { Board } from "./game/Board";
 import { Game } from "./game/Game";
+import { GameSettings } from "./game/types";
 import { createSquareElements } from "./index";
+
+declare global {
+  interface Window {
+    game?: Game;
+  }
+}
 
 const gameSettings: GameSettings = {
   rows: 8,
@@ -46,4 +53,4 @@ const squareElements = createSquareElements(
 const board = new Board(squareElements);
 
 // create game
-const game = new Game(gameSettings, board);
+window.game = new Game(gameSettings, board);
