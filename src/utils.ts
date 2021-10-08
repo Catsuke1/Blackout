@@ -9,11 +9,19 @@ export function forEach2d<T>(
   }
 }
 
-export function make2dArray<T>(rows: number, columns: number) {
+export function make2dArray<T>(
+  rows: number,
+  columns: number,
+  initialValue?: T
+) {
   var array = new Array<T[]>(rows);
 
   for (let row = 0; row < rows; row++) {
     array[row] = new Array<T>(columns);
+
+    for (let column = 0; column < columns; column++) {
+      array[row][column] = initialValue;
+    }
   }
 
   return array;

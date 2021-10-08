@@ -1,54 +1,36 @@
+import { Position, SquareTypes, toPos } from "../types";
 import { forEach2d, make2dArray } from "../utils";
-import { Square } from "./Square";
-import { Position, SquareTypes } from "./types";
 
 export class Board {
   rows: number;
   columns: number;
 
-  squares: Square[][];
+  squareTypes: SquareTypes[][];
 
-  constructor(squareElements: HTMLElement[][]) {
-    this.rows = squareElements.length;
-    this.columns = squareElements[0].length;
+  constructor(rows: number, columns: number) {
+    this.rows = rows;
+    this.columns = columns;
 
-    this.squares = make2dArray(this.rows, this.columns);
-
-    forEach2d(squareElements, (element, row, col) => {
-      this.squares[row][col] = new Square(element, SquareTypes.Empty);
-    });
+    this.squareTypes = make2dArray(rows, columns, SquareTypes.Empty);
   }
 
-  getSquare(position: Position) {
-    return this.squares[position.row][position.column];
+  getSquareType(position: Position) {
+    return this.squareTypes[position.row][position.column];
   }
 
-  forEachSquare(fn: (square: Square, position: Position) => void) {
-    forEach2d(this.squares, (square, row, column) => {
-      fn(square, { row: row, column: column });
-    });
+  setSquareType(position: Position, squareType: SquareTypes) {
+    this.squareTypes[position.row][position.column] = squareType;
   }
 
-  highlightValidMoves(validMoves: Position[]) {
-    for (const validMove of validMoves) {
-      this.getSquare(validMove).setHighlight(true);
-    }
-  }
-
-  clearHighlights() {
-    this.forEachSquare((square, position) => {
-      if (square.highlight) {
-        square.setHighlight(false);
-      }
+  forEachSquareType(fn: (squareType: SquareTypes, position: Position) => void) {
+    forEach2d(this.squareTypes, (squareType, row, column) => {
+      fn(squareType, toPos(row, column));
     });
   }
 
   movePiece(origin: Position, destination: Position) {
-    const originSquare = this.getSquare(origin);
-    const destinationSquare = this.getSquare(destination);
-
-    destinationSquare.setType(originSquare.type);
-    originSquare.setType(SquareTypes.Empty);
+    this.setSquareType(destination, this.getSquareType(origin));
+    this.setSquareType(origin, SquareTypes.Empty);
   }
 
   getQueenPositions() {
@@ -60,10 +42,10 @@ export class Board {
       black: [],
     };
 
-    this.forEachSquare((square, position) => {
-      if (square.type === SquareTypes.WhitePiece) {
+    this.forEachSquareType((type, position) => {
+      if (type === SquareTypes.WhitePiece) {
         queens.white.push(position);
-      } else if (square.type === SquareTypes.BlackPiece) {
+      } else if (type === SquareTypes.BlackPiece) {
         queens.black.push(position);
       }
     });

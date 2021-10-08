@@ -1,139 +1,40 @@
-import { Board } from "./Board";
-import { getValidQueenMoves, isMoveValid } from "./Chess";
-import { Action, Color, GameSettings, Position, SquareTypes } from "./types";
 import { EventEmitter } from "events";
+import { Action, Color, GameData, GameSettings, SquareTypes } from "../types";
+import { Board } from "./Board";
+import { getValidQueenMoves } from "./Chess";
 
 export class Game extends EventEmitter {
   gameSettings: GameSettings;
-  board: Board;
 
+  board: Board;
   turnColor: Color;
   turnAction: Action;
 
-  activePiece: {
-    wasClicked: boolean;
-    position: Position;
-    validMoves: Position[];
-  };
-
-  constructor(gameSettings: GameSettings, board: Board) {
+  constructor(gameSettings: GameSettings) {
     super();
 
     this.gameSettings = gameSettings;
-    this.board = board;
+
+    this.board = new Board(this.gameSettings.rows, this.gameSettings.columns);
+
+    for (const whiteQueen of this.gameSettings.start.pieces.white) {
+      this.board.setSquareType(whiteQueen, SquareTypes.WhitePiece);
+    }
+
+    for (const blackQueen of this.gameSettings.start.pieces.black) {
+      this.board.setSquareType(blackQueen, SquareTypes.BlackPiece);
+    }
 
     this.turnColor = this.gameSettings.start.color;
     this.turnAction = this.gameSettings.start.action;
+  }
 
-    this.activePiece = {
-      wasClicked: false,
-      position: undefined,
-      validMoves: undefined,
+  getData(): GameData {
+    return {
+      boardData: this.board.squareTypes,
+      turnColor: this.turnColor,
+      turnAction: this.turnAction,
     };
-
-    // setup initial pieces
-    for (const whitePiece of this.gameSettings.start.pieces.white) {
-      this.board.getSquare(whitePiece).setType(SquareTypes.WhitePiece);
-    }
-
-    for (const blackPiece of this.gameSettings.start.pieces.black) {
-      this.board.getSquare(blackPiece).setType(SquareTypes.BlackPiece);
-    }
-
-    // setup squares
-    this.board.forEachSquare((square, position) => {
-      square.element.onclick = () => {
-        console.log(square.type, position);
-
-        switch (square.type) {
-          case SquareTypes.Empty:
-            if (this.turnAction === "card") {
-              square.setType(SquareTypes.Card);
-
-              this.nextTurn();
-            }
-
-            if (this.turnAction === "piece" && this.activePiece.wasClicked) {
-              if (isMoveValid(position, this.activePiece.validMoves)) {
-                this.board.movePiece(this.activePiece.position, position);
-
-                this.board.clearHighlights();
-
-                this.nextTurn();
-              } else {
-                this.board.clearHighlights();
-
-                this.resetPiece();
-              }
-            }
-            break;
-
-          case SquareTypes.Card:
-            this.board.clearHighlights();
-
-            this.resetPiece();
-            break;
-
-          case SquareTypes.WhitePiece:
-            this.board.clearHighlights();
-
-            if (this.turnAction === "piece" && this.turnColor === "white") {
-              if (
-                this.activePiece.wasClicked &&
-                this.activePiece.position === position
-              ) {
-                this.resetPiece();
-              } else {
-                const validMoves = getValidQueenMoves(this.board, position);
-
-                this.board.highlightValidMoves(validMoves);
-
-                this.setActivePiece(position, validMoves);
-              }
-            }
-            break;
-
-          case SquareTypes.BlackPiece:
-            this.board.clearHighlights();
-
-            if (this.turnAction === "piece" && this.turnColor === "black") {
-              if (
-                this.activePiece.wasClicked &&
-                this.activePiece.position === position
-              ) {
-                this.resetPiece();
-              } else {
-                const validMoves = getValidQueenMoves(this.board, position);
-
-                this.board.highlightValidMoves(validMoves);
-
-                this.setActivePiece(position, validMoves);
-              }
-            }
-            break;
-        }
-      };
-    });
-
-    this.displayTurnStatus();
-  }
-
-  disableSquaresOnclick() {
-    this.board.forEachSquare((square, position) => {
-      square.element.onclick = () => {};
-    });
-  }
-
-  setActivePiece(position: Position, validMoves: Position[]) {
-    this.activePiece.wasClicked = true;
-    this.activePiece.position = position;
-    this.activePiece.validMoves = validMoves;
-  }
-
-  resetPiece() {
-    this.activePiece.wasClicked = false;
-    this.activePiece.position = undefined;
-    this.activePiece.validMoves = undefined;
   }
 
   nextTurn() {
@@ -143,31 +44,9 @@ export class Game extends EventEmitter {
       this.turnAction = this.turnAction === "card" ? "piece" : "card";
     }
 
-    this.resetPiece();
-    this.displayTurnStatus();
-
     const gameCondition = this.checkGameCondition();
 
-    if (gameCondition !== "nowin") {
-      const winnerElement = document.getElementById("winner");
-
-      if (gameCondition === "whitewin") {
-        winnerElement.innerText = "White wins!";
-      } else if (gameCondition === "blackwin") {
-        winnerElement.innerText = "Black wins!";
-      }
-
-      this.disableSquaresOnclick();
-      this.emit("gameover");
-    }
-  }
-
-  displayTurnStatus() {
-    const turnElement = document.getElementById("turn");
-    const turnTypeElement = document.getElementById("turnType");
-
-    turnElement.innerText = this.turnColor;
-    turnTypeElement.innerText = this.turnAction;
+    this.emit("endTurn", gameCondition);
   }
 
   checkGameCondition() {

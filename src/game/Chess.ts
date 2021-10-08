@@ -1,6 +1,5 @@
 import { Board } from "./Board";
-import { toPos } from "./typeHelpers";
-import { Position, SquareTypes } from "./types";
+import { Position, SquareTypes, toPos } from "../types";
 
 export function isMoveValid(move: Position, validMoves: Position[]) {
   for (const validMove of validMoves) {
@@ -19,7 +18,7 @@ export function getValidQueenMoves(board: Board, queenPosition: Position) {
   for (let row = queenPosition.row - 1; row > -1; row--) {
     const squarePosition = toPos(row, queenPosition.column);
 
-    if (board.getSquare(squarePosition).type !== SquareTypes.Empty) {
+    if (board.getSquareType(squarePosition) !== SquareTypes.Empty) {
       break;
     }
 
@@ -30,7 +29,7 @@ export function getValidQueenMoves(board: Board, queenPosition: Position) {
   for (let row = queenPosition.row + 1; row < board.rows; row++) {
     const squarePosition = toPos(row, queenPosition.column);
 
-    if (board.getSquare(squarePosition).type !== SquareTypes.Empty) {
+    if (board.getSquareType(squarePosition) !== SquareTypes.Empty) {
       break;
     }
 
@@ -41,7 +40,7 @@ export function getValidQueenMoves(board: Board, queenPosition: Position) {
   for (let column = queenPosition.column - 1; column > -1; column--) {
     const squarePosition = toPos(queenPosition.row, column);
 
-    if (board.getSquare(squarePosition).type !== SquareTypes.Empty) {
+    if (board.getSquareType(squarePosition) !== SquareTypes.Empty) {
       break;
     }
 
@@ -56,7 +55,7 @@ export function getValidQueenMoves(board: Board, queenPosition: Position) {
   ) {
     const squarePosition = toPos(queenPosition.row, column);
 
-    if (board.getSquare(squarePosition).type !== SquareTypes.Empty) {
+    if (board.getSquareType(squarePosition) !== SquareTypes.Empty) {
       break;
     }
 
@@ -71,7 +70,7 @@ export function getValidQueenMoves(board: Board, queenPosition: Position) {
   ) {
     const squarePosition = toPos(row, column);
 
-    if (board.getSquare(squarePosition).type !== SquareTypes.Empty) {
+    if (board.getSquareType(squarePosition) !== SquareTypes.Empty) {
       break;
     }
 
@@ -86,7 +85,7 @@ export function getValidQueenMoves(board: Board, queenPosition: Position) {
   ) {
     const squarePosition = toPos(row, column);
 
-    if (board.getSquare(squarePosition).type !== SquareTypes.Empty) {
+    if (board.getSquareType(squarePosition) !== SquareTypes.Empty) {
       break;
     }
 
@@ -101,7 +100,7 @@ export function getValidQueenMoves(board: Board, queenPosition: Position) {
   ) {
     const squarePosition = toPos(row, column);
 
-    if (board.getSquare(squarePosition).type !== SquareTypes.Empty) {
+    if (board.getSquareType(squarePosition) !== SquareTypes.Empty) {
       break;
     }
 
@@ -116,7 +115,7 @@ export function getValidQueenMoves(board: Board, queenPosition: Position) {
   ) {
     const squarePosition = toPos(row, column);
 
-    if (board.getSquare(squarePosition).type !== SquareTypes.Empty) {
+    if (board.getSquareType(squarePosition) !== SquareTypes.Empty) {
       break;
     }
 

@@ -1,6 +1,6 @@
-import { SquareTypes } from "./types";
+import { SquareTypes } from "../types";
 
-export class Square {
+export class SquareComponent {
   element: HTMLElement;
   type: SquareTypes;
 
@@ -22,11 +22,13 @@ export class Square {
   setType(type: SquareTypes) {
     this.type = type;
 
+    // ♕ ♛
+
     this.element.classList.toggle("card", this.type === SquareTypes.Card);
 
     switch (this.type) {
       case SquareTypes.Empty:
-        this.element.innerText = "";
+        this.element.textContent = "";
         break;
 
       case SquareTypes.WhitePiece:

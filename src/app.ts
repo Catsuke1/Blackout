@@ -1,17 +1,7 @@
-import { Board } from "./game/Board";
+import { GameComponent } from "./components/GameComponent";
+import { GameElement, GameSettings } from "./types";
 import { Game } from "./game/Game";
-import { GameSettings } from "./game/types";
-import { createSquareElements } from "./index";
-
-declare global {
-  interface Window {
-    game?: Game;
-  }
-}
-
-document.getElementById("newGame").onclick = () => {
-  createNewGame();
-};
+import { Player } from "./multiplayer/Player";
 
 const gameSettings: GameSettings = {
   rows: 8,
@@ -46,22 +36,26 @@ const gameSettings: GameSettings = {
   },
 };
 
-createNewGame();
+const game = new Game(gameSettings);
 
-function createNewGame() {
-  document.getElementById("board").textContent = "";
+const gameElement1: GameElement = {
+  parent: document.querySelector("#player1"),
+  board: document.querySelector("#player1>.board"),
+  turnColor: document.querySelector("#player1>.gamestate .turnColor"),
+  turnAction: document.querySelector("#player1>.gamestate .turnAction"),
+};
+const client1 = new GameComponent(gameElement1, game);
 
-  const squareElements = createSquareElements(
-    gameSettings.rows,
-    gameSettings.columns,
-    document.getElementById("board")
-  );
+const player1 = new Player(client1, "white");
 
-  const board = new Board(squareElements);
+// const gameElement2: GameElement = {
+//   parent: document.querySelector("#player2"),
+//   board: document.querySelector("#player2>.board"),
+//   turnColor: document.querySelector("#player2>.gamestate .turnColor"),
+//   turnAction: document.querySelector("#player2>.gamestate .turnAction"),
+// };
+// const client2 = new GameComponent(gameElement2, game);
 
-  window.game = new Game(gameSettings, board);
+// const player2 = new Player(client2, "black");
 
-  window.game.on("gameover", () => {
-    console.log("gameover");
-  });
-}
+// const connection = new Connection(player1, player2, game);

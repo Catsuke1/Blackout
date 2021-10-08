@@ -12,17 +12,28 @@
       <h1>Blackout</h1>
 
       <div id="settings">
-        <button id="newGame">New Game</button>
+        <button id="newGame" disabled>New Game</button>
       </div>
 
-      <div id="board"></div>
+      <div id="player1">
+        <div class="board"></div>
 
-      <div id="gamestate">
-        <div>Turn: <span id="turn"></span></div>
-        <div>Action: <span id="turnType"></span></div>
-
-        <span id="winner"></span>
+        <div class="gamestate">
+          <div>Turn: <span class="turnColor"></span></div>
+          <div>Action: <span class="turnAction"></span></div>
+        </div>
       </div>
+
+      <div id="player2">
+        <div class="board"></div>
+
+        <div class="gamestate">
+          <div>Turn: <span class="turnColor"></span></div>
+          <div>Action: <span class="turnAction"></span></div>
+        </div>
+      </div>
+
+      <div id="winner"></div>
     </div>
   </body>
 </html>
