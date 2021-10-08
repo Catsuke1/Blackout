@@ -1,7 +1,6 @@
-import { getValidQueenMoves, isMoveValid } from "../game/Chess";
 import { Game } from "../game/Game";
+import { GameElement, Position } from "../types";
 import { BoardComponent } from "./BoardComponent";
-import { GameElement, Position, SquareTypes } from "../types";
 
 export class GameComponent {
   element: GameElement;
@@ -17,11 +16,7 @@ export class GameComponent {
   constructor(element: GameElement, game: Game) {
     this.element = element;
 
-    this.boardComponent = new BoardComponent(
-      this.element.board,
-      game.board.rows,
-      game.board.columns
-    );
+    this.boardComponent = new BoardComponent(this.element.board, game.board);
 
     this.activePiece = {
       wasClicked: false,
@@ -52,11 +47,15 @@ export class GameComponent {
     this.activePiece.wasClicked = true;
     this.activePiece.position = position;
     this.activePiece.validMoves = validMoves;
+
+    this.boardComponent.highlightSquares(validMoves);
   }
 
   resetPiece() {
     this.activePiece.wasClicked = false;
     this.activePiece.position = undefined;
     this.activePiece.validMoves = undefined;
+
+    this.boardComponent.clearHighlights();
   }
 }

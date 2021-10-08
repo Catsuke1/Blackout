@@ -1,8 +1,7 @@
-import { GameComponent } from "./components/GameComponent";
-import { GameCondition, GameElement, GameSettings } from "./types";
 import { Game } from "./game/Game";
-import { Player } from "./multiplayer/Player";
 import { Connection } from "./multiplayer/Connection";
+import { Player } from "./multiplayer/Player";
+import { GameCondition, GameElement, GameSettings } from "./types";
 
 const gameSettings: GameSettings = {
   rows: 8,
@@ -54,22 +53,7 @@ const gameElement2: GameElement = {
 };
 
 const player1 = new Player(gameElement1, game);
-player1.setGame(game);
 
 const player2 = new Player(gameElement2, game);
-player2.setGame(game);
-
-game.on("endTurn", (gameCondition: GameCondition) => {
-  player1.setGame(game);
-
-  if (gameCondition === "blackwin") {
-    document.getElementById("winner").innerText = "Black wins!";
-    return;
-  }
-  if (gameCondition === "whitewin") {
-    document.getElementById("winner").innerText = "White wins!";
-    return;
-  }
-});
 
 const connection = new Connection(player1, player2, game);

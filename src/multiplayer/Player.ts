@@ -1,14 +1,8 @@
+import { EventEmitter } from "events";
 import { GameComponent } from "../components/GameComponent";
 import { getValidQueenMoves, isMoveValid } from "../game/Chess";
 import { Game } from "../game/Game";
-import {
-  Color,
-  GameCondition,
-  GameData,
-  GameElement,
-  SquareTypes,
-} from "../types";
-import { EventEmitter } from "events";
+import { GameCondition, GameElement, SquareTypes } from "../types";
 
 export class Player extends EventEmitter {
   gameComponent: GameComponent;
@@ -48,74 +42,62 @@ export class Player extends EventEmitter {
                     position
                   );
 
-                  this.gameComponent.boardComponent.clearHighlights();
+                  this.gameComponent.resetPiece();
 
                   this.game.nextTurn();
                 } else {
-                  this.gameComponent.boardComponent.clearHighlights();
-
                   this.gameComponent.resetPiece();
                 }
               }
               break;
 
             case SquareTypes.Card:
-              this.gameComponent.boardComponent.clearHighlights();
-
               this.gameComponent.resetPiece();
               break;
 
             case SquareTypes.WhitePiece:
-              this.gameComponent.boardComponent.clearHighlights();
+              if (this.gameComponent.activePiece.wasClicked) {
+                if (this.gameComponent.activePiece.position === position) {
+                  this.gameComponent.resetPiece();
+                  break;
+                }
+              }
+
+              this.gameComponent.resetPiece();
 
               if (
                 this.game.turnAction === "piece" &&
                 this.game.turnColor === "white"
               ) {
-                if (
-                  this.gameComponent.activePiece.wasClicked &&
-                  this.gameComponent.activePiece.position === position
-                ) {
-                  this.gameComponent.resetPiece();
-                } else {
-                  const validMoves = getValidQueenMoves(
-                    this.game.board,
-                    position
-                  );
+                const validMoves = getValidQueenMoves(
+                  this.game.board,
+                  position
+                );
 
-                  this.gameComponent.boardComponent.highlightSquares(
-                    validMoves
-                  );
-
-                  this.gameComponent.setActivePiece(position, validMoves);
-                }
+                this.gameComponent.setActivePiece(position, validMoves);
               }
               break;
 
             case SquareTypes.BlackPiece:
-              this.gameComponent.boardComponent.clearHighlights();
+              if (this.gameComponent.activePiece.wasClicked) {
+                if (this.gameComponent.activePiece.position === position) {
+                  this.gameComponent.resetPiece();
+                  break;
+                }
+              }
+
+              this.gameComponent.resetPiece();
 
               if (
                 this.game.turnAction === "piece" &&
                 this.game.turnColor === "black"
               ) {
-                if (
-                  this.gameComponent.activePiece.wasClicked &&
-                  this.gameComponent.activePiece.position === position
-                ) {
-                  this.gameComponent.resetPiece();
-                } else {
-                  const validMoves = getValidQueenMoves(
-                    this.game.board,
-                    position
-                  );
+                const validMoves = getValidQueenMoves(
+                  this.game.board,
+                  position
+                );
 
-                  this.gameComponent.boardComponent.highlightSquares(
-                    validMoves
-                  );
-
-                  this.gameComponent.setActivePiece(position, validMoves);
-                }
+                this.gameComponent.setActivePiece(position, validMoves);
               }
               break;
           }

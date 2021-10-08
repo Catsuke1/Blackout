@@ -8,10 +8,13 @@ export class BoardComponent {
 
   squareComponents: SquareComponent[][];
 
-  constructor(element: HTMLElement, rows: number, columns: number) {
+  constructor(element: HTMLElement, board: Board) {
     this.element = element;
 
-    this.squareComponents = make2dArray<SquareComponent>(rows, columns);
+    this.squareComponents = make2dArray<SquareComponent>(
+      board.rows,
+      board.columns
+    );
 
     let isBlack = false;
     let rowElement: HTMLElement;
@@ -33,7 +36,9 @@ export class BoardComponent {
       if (isBlack) squareElement.classList.add("black");
 
       this.squareComponents[row][column] = new SquareComponent(squareElement);
-      this.squareComponents[row][column].setType(SquareTypes.Empty);
+      this.squareComponents[row][column].setType(
+        board.getSquareType(toPos(row, column))
+      );
 
       isBlack = !isBlack;
     });
