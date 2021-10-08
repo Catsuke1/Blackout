@@ -14,6 +14,8 @@ export class Connection {
 
     this.player1.setGame(this.game);
     this.player2.setGame(this.game);
+    this.player1.color = "white";
+    this.player2.color = "black";
 
     // this.player1.on("endTurn", (gameCondition: GameCondition) => {
     //   console.log("Player 1 finished their turn.", gameCondition);

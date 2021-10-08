@@ -2,11 +2,13 @@ import { EventEmitter } from "events";
 import { GameComponent } from "../components/GameComponent";
 import { getValidQueenMoves, isMoveValid } from "../game/Chess";
 import { Game } from "../game/Game";
-import { GameCondition, GameElement, SquareTypes } from "../types";
+import { Color, GameCondition, GameElement, SquareTypes } from "../types";
 
 export class Player extends EventEmitter {
   gameComponent: GameComponent;
   game: Game;
+
+  color: Color | "nocolor";
 
   constructor(gameElement: GameElement, game: Game) {
     super();
@@ -14,10 +16,21 @@ export class Player extends EventEmitter {
     this.gameComponent = new GameComponent(gameElement, game);
     this.game = game;
 
+    this.color = "nocolor";
+
     this.gameComponent.boardComponent.forEachSquare(
       (squareComponent, position) => {
         squareComponent.element.onclick = () => {
           console.log(this.game.board.getSquareType(position), position);
+
+          if (this.color !== "nocolor") {
+            if (
+              (this.color === "white" && this.game.turnColor !== "white") ||
+              (this.color === "black" && this.game.turnColor !== "black")
+            ) {
+              return;
+            }
+          }
 
           switch (this.game.board.getSquareType(position)) {
             case SquareTypes.Empty:
