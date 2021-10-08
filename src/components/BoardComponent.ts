@@ -5,18 +5,13 @@ import { Position, SquareTypes, toPos } from "../types";
 
 export class BoardComponent {
   element: HTMLElement;
-  board: Board;
 
   squareComponents: SquareComponent[][];
 
-  constructor(element: HTMLElement, board: Board) {
+  constructor(element: HTMLElement, rows: number, columns: number) {
     this.element = element;
-    this.board = board;
 
-    this.squareComponents = make2dArray<SquareComponent>(
-      this.board.rows,
-      this.board.columns
-    );
+    this.squareComponents = make2dArray<SquareComponent>(rows, columns);
 
     let isBlack = false;
     let rowElement: HTMLElement;
@@ -37,21 +32,21 @@ export class BoardComponent {
       squareElement.classList.add("square");
       if (isBlack) squareElement.classList.add("black");
 
-      this.squareComponents[row][column] = new SquareComponent(
-        squareElement,
-        this.board.getSquareType(toPos(row, column))
-      );
+      this.squareComponents[row][column] = new SquareComponent(squareElement);
+      this.squareComponents[row][column].setType(SquareTypes.Empty);
 
       isBlack = !isBlack;
     });
   }
 
   setBoard(board: Board) {
-    this.board = board;
-
-    this.board.forEachSquareType((type, position) => {
-      this.getSquare(position).setType(type);
+    board.forEachSquareType((type, position) => {
+      this.squareComponents[position.row][position.column].setType(type);
     });
+  }
+
+  setSquare(position: Position, type: SquareTypes) {
+    this.squareComponents[position.row][position.column].setType(type);
   }
 
   getSquare(position: Position) {
@@ -76,13 +71,5 @@ export class BoardComponent {
         square.setHighlight(false);
       }
     });
-  }
-
-  movePiece(origin: Position, destination: Position) {
-    const originSquare = this.getSquare(origin);
-    const destinationSquare = this.getSquare(destination);
-
-    destinationSquare.setType(originSquare.type);
-    originSquare.setType(SquareTypes.Empty);
   }
 }

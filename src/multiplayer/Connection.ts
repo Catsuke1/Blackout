@@ -18,7 +18,7 @@ export class Connection {
     this.player1.on("endTurn", (gameCondition: GameCondition) => {
       console.log("Player 1 finished their turn.", gameCondition);
 
-      const game = this.player1.getGame();
+      const game = this.player1.game;
 
       this.player2.setGame(game);
     });
@@ -26,7 +26,7 @@ export class Connection {
     this.player2.on("endTurn", (gameCondition: GameCondition) => {
       console.log("Player 2 finished their turn.", gameCondition);
 
-      const game = this.player2.getGame();
+      const game = this.player2.game;
 
       this.player1.setGame(game);
     });

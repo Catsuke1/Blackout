@@ -5,7 +5,6 @@ import { GameElement, Position, SquareTypes } from "../types";
 
 export class GameComponent {
   element: GameElement;
-  game: Game;
 
   boardComponent: BoardComponent;
 
@@ -17,11 +16,11 @@ export class GameComponent {
 
   constructor(element: GameElement, game: Game) {
     this.element = element;
-    this.game = game;
 
     this.boardComponent = new BoardComponent(
       this.element.board,
-      this.game.board
+      game.board.rows,
+      game.board.columns
     );
 
     this.activePiece = {
@@ -30,112 +29,17 @@ export class GameComponent {
       validMoves: undefined,
     };
 
-    // setup squares
-    this.boardComponent.forEachSquare((square, position) => {
-      square.element.onclick = () => {
-        console.log(square.type, position);
-
-        switch (square.type) {
-          case SquareTypes.Empty:
-            if (this.game.turnAction === "card") {
-              square.setType(SquareTypes.Card);
-
-              this.game.nextTurn();
-            }
-
-            if (
-              this.game.turnAction === "piece" &&
-              this.activePiece.wasClicked
-            ) {
-              if (isMoveValid(position, this.activePiece.validMoves)) {
-                this.boardComponent.movePiece(
-                  this.activePiece.position,
-                  position
-                );
-
-                this.boardComponent.clearHighlights();
-
-                this.game.nextTurn();
-              } else {
-                this.boardComponent.clearHighlights();
-
-                this.resetPiece();
-              }
-            }
-            break;
-
-          case SquareTypes.Card:
-            this.boardComponent.clearHighlights();
-
-            this.resetPiece();
-            break;
-
-          case SquareTypes.WhitePiece:
-            this.boardComponent.clearHighlights();
-
-            if (
-              this.game.turnAction === "piece" &&
-              this.game.turnColor === "white"
-            ) {
-              if (
-                this.activePiece.wasClicked &&
-                this.activePiece.position === position
-              ) {
-                this.resetPiece();
-              } else {
-                const validMoves = getValidQueenMoves(
-                  this.game.board,
-                  position
-                );
-
-                this.boardComponent.highlightSquares(validMoves);
-
-                this.setActivePiece(position, validMoves);
-              }
-            }
-            break;
-
-          case SquareTypes.BlackPiece:
-            this.boardComponent.clearHighlights();
-
-            if (
-              this.game.turnAction === "piece" &&
-              this.game.turnColor === "black"
-            ) {
-              if (
-                this.activePiece.wasClicked &&
-                this.activePiece.position === position
-              ) {
-                this.resetPiece();
-              } else {
-                const validMoves = getValidQueenMoves(
-                  this.game.board,
-                  position
-                );
-
-                this.boardComponent.highlightSquares(validMoves);
-
-                this.setActivePiece(position, validMoves);
-              }
-            }
-            break;
-        }
-      };
-    });
-
-    this.displayTurnStatus();
+    this.displayTurnStatus(game);
   }
 
   setGame(game: Game) {
-    this.game = game;
-
-    this.boardComponent.setBoard(this.game.board);
-    this.displayTurnStatus();
+    this.boardComponent.setBoard(game.board);
+    this.displayTurnStatus(game);
   }
 
-  displayTurnStatus() {
-    this.element.turnColor.innerText = this.game.turnColor;
-    this.element.turnAction.innerText = this.game.turnAction;
+  displayTurnStatus(game: Game) {
+    this.element.turnColor.innerText = game.turnColor;
+    this.element.turnAction.innerText = game.turnAction;
   }
 
   disableSquaresOnclick() {

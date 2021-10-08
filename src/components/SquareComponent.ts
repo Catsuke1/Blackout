@@ -2,13 +2,11 @@ import { SquareTypes } from "../types";
 
 export class SquareComponent {
   element: HTMLElement;
-  type: SquareTypes;
 
   highlight: boolean;
 
-  constructor(element: HTMLElement, type: SquareTypes) {
+  constructor(element: HTMLElement) {
     this.element = element;
-    this.setType(type);
 
     this.highlight = false;
   }
@@ -20,13 +18,11 @@ export class SquareComponent {
   }
 
   setType(type: SquareTypes) {
-    this.type = type;
-
     // ♕ ♛
 
-    this.element.classList.toggle("card", this.type === SquareTypes.Card);
+    this.element.classList.toggle("card", type === SquareTypes.Card);
 
-    switch (this.type) {
+    switch (type) {
       case SquareTypes.Empty:
         this.element.textContent = "";
         break;
