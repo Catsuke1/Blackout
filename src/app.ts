@@ -1,7 +1,7 @@
 import { Game } from "./game/Game";
 import { Connection } from "./multiplayer/Connection";
 import { Player } from "./multiplayer/Player";
-import { GameCondition, GameElement, GameSettings } from "./types";
+import { GameElement, GameSettings } from "./types";
 
 const gameSettings: GameSettings = {
   rows: 8,

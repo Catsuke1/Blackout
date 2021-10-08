@@ -1,18 +1,15 @@
-import { EventEmitter } from "events";
 import { GameComponent } from "../components/GameComponent";
 import { getValidQueenMoves, isMoveValid } from "../game/Chess";
 import { Game } from "../game/Game";
-import { Color, GameCondition, GameElement, SquareTypes } from "../types";
+import { Color, GameElement, SquareTypes } from "../types";
 
-export class Player extends EventEmitter {
+export class Player {
   gameComponent: GameComponent;
   game: Game;
 
   color: Color | "nocolor";
 
   constructor(gameElement: GameElement, game: Game) {
-    super();
-
     this.gameComponent = new GameComponent(gameElement, game);
     this.game = game;
 
@@ -117,10 +114,6 @@ export class Player extends EventEmitter {
         };
       }
     );
-
-    this.game.on("endTurn", (gameCondition: GameCondition) => {
-      this.emit("endTurn", gameCondition);
-    });
   }
 
   setGame(game: Game) {
