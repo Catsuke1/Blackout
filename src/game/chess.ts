@@ -1,4 +1,4 @@
-import { BoardData } from "./data/BoardData";
+import { BoardData } from "./BoardData";
 import { Position, SquareTypes, toPos } from "./types";
 
 export function isMoveValid(move: Position, validMoves: Position[]) {

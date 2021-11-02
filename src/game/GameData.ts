@@ -5,9 +5,9 @@ import {
   GameSettings,
   SquareTypes,
   WinCondition,
-} from "../types";
+} from "./types";
 import { BoardData } from "./BoardData";
-import { getValidQueenMoves } from "../chess";
+import { getValidQueenMoves } from "./chess";
 
 export class GameData {
   gameSettings: GameSettings;

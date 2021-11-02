@@ -1,5 +1,5 @@
-import { Position, SquareTypes, toPos } from "../types";
-import { forEach2d, make2dArray } from "../utils";
+import { Position, SquareTypes, toPos } from "./types";
+import { forEach2d, make2dArray } from "./utils";
 
 export class BoardData {
   rows: number;

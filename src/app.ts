@@ -1,9 +1,10 @@
 import { GameComponent } from "./components/GameComponent";
-import { GameData } from "./data/GameData";
+import { GameData } from "./game/GameData";
 import { LocalGame } from "./local/LocalGame";
 import { Connection } from "./multiplayer/Connection";
 
-import { GameElement, GameSettings } from "./types";
+import { GameElement, GameSettings } from "./game/types";
+import { Player } from "./multiplayer/Player";
 
 const gameSettings: GameSettings = {
   rows: 8,
@@ -48,20 +49,22 @@ const gameElement1: GameElement = {
   winner: document.querySelector("#player1>.gamestate .winner"),
 };
 
-const gameComponent = new GameComponent(gameElement1, gameData);
+const gameComponent1 = new GameComponent(gameElement1, gameData);
 
-const localGame = new LocalGame(gameData, gameComponent);
+// const localGame = new LocalGame(gameData, gameComponent);
 
-// const player1 = new Player(gameElement1, gameData);
+const player1 = new Player(gameComponent1);
 
-// const gameElement2: GameElement = {
-//   parent: document.querySelector("#player2"),
-//   board: document.querySelector("#player2>.board"),
-//   turnColor: document.querySelector("#player2>.gamestate .turnColor"),
-//   turnAction: document.querySelector("#player2>.gamestate .turnAction"),
-//   winner: document.querySelector("#player2>.gamestate .winner"),
-// };
+const gameElement2: GameElement = {
+  parent: document.querySelector("#player2"),
+  board: document.querySelector("#player2>.board"),
+  turnColor: document.querySelector("#player2>.gamestate .turnColor"),
+  turnAction: document.querySelector("#player2>.gamestate .turnAction"),
+  winner: document.querySelector("#player2>.gamestate .winner"),
+};
 
-// const player2 = new Player(gameElement2, game);
+const gameComponent2 = new GameComponent(gameElement2, gameData);
 
-// const connection = new Connection(player1, player2, game);
+const player2 = new Player(gameComponent2);
+
+const connection = new Connection(player1, player2, gameData);

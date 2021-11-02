@@ -1,5 +1,5 @@
-import { GameData } from "../data/GameData";
-import { Action, Color, GameElement, Position } from "../types";
+import { GameData } from "../game/GameData";
+import { Action, Color, GameElement, Position } from "../game/types";
 import { BoardComponent } from "./BoardComponent";
 import { EventEmitter } from "events";
 

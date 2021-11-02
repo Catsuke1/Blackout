@@ -1,7 +1,7 @@
-import { BoardData } from "../data/BoardData";
-import { forEach2d, make2dArray } from "../utils";
+import { BoardData } from "../game/BoardData";
+import { forEach2d, make2dArray } from "../game/utils";
 import { SquareComponent } from "./SquareComponent";
-import { Position, SquareTypes, toPos } from "../types";
+import { Position, SquareTypes, toPos } from "../game/types";
 
 export class BoardComponent {
   element: HTMLElement;

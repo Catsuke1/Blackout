@@ -1,17 +1,23 @@
-import { getValidQueenMoves, isMoveValid } from "../game/chess";
 import { GameComponent } from "../components/GameComponent";
+import { EventEmitter } from "events";
 import { GameData } from "../game/GameData";
-import { GameElement, SquareTypes } from "../game/types";
+import { Color, SquareTypes } from "../game/types";
+import { isMoveValid, getValidQueenMoves } from "../game/chess";
 
-export class LocalGame {
-  gameData: GameData;
+export class Player extends EventEmitter {
   gameComponent: GameComponent;
 
-  constructor(gameData: GameData, gameComponent: GameComponent) {
-    this.gameData = gameData;
+  color: Color;
+  gameData: GameData;
+
+  constructor(gameComponent: GameComponent) {
+    super();
+
     this.gameComponent = gameComponent;
 
     this.gameComponent.on("click", (position) => {
+      if (this.color !== this.gameData.turn.color) return;
+
       const squareType = this.gameData.board.getSquareType(position);
 
       switch (squareType) {
@@ -19,7 +25,7 @@ export class LocalGame {
           if (this.gameData.turn.action === "card") {
             this.gameData.board.setSquareType(position, SquareTypes.Card);
 
-            this.nextTurn();
+            this.sendMove();
           }
 
           if (
@@ -36,7 +42,7 @@ export class LocalGame {
 
               this.gameComponent.resetPiece();
 
-              this.nextTurn();
+              this.sendMove();
             } else {
               this.gameComponent.resetPiece();
             }
@@ -96,8 +102,18 @@ export class LocalGame {
     });
   }
 
-  nextTurn() {
+  setGameData(gameData: GameData) {
+    this.gameData = gameData;
+    this.gameComponent.setGame(gameData);
+  }
+
+  setColor(color: Color) {
+    this.color = color;
+  }
+
+  sendMove() {
     this.gameData.nextTurn();
-    this.gameComponent.setGame(this.gameData);
+    this.emit("move", this.gameData);
+    console.log(this.gameData);
   }
 }

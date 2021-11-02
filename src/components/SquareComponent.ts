@@ -1,4 +1,4 @@
-import { SquareTypes } from "../types";
+import { SquareTypes } from "../game/types";
 
 export class SquareComponent {
   element: HTMLElement;
