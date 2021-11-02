@@ -1,4 +1,4 @@
-import { Board } from "../game/Board";
+import { BoardData } from "../data/BoardData";
 import { forEach2d, make2dArray } from "../utils";
 import { SquareComponent } from "./SquareComponent";
 import { Position, SquareTypes, toPos } from "../types";
@@ -8,7 +8,7 @@ export class BoardComponent {
 
   squareComponents: SquareComponent[][];
 
-  constructor(element: HTMLElement, board: Board) {
+  constructor(element: HTMLElement, board: BoardData) {
     this.element = element;
 
     this.squareComponents = make2dArray<SquareComponent>(
@@ -35,8 +35,8 @@ export class BoardComponent {
       squareElement.classList.add("square");
       if (isBlack) squareElement.classList.add("black");
 
-      this.squareComponents[row][column] = new SquareComponent(squareElement);
-      this.squareComponents[row][column].setType(
+      this.squareComponents[row][column] = new SquareComponent(
+        squareElement,
         board.getSquareType(toPos(row, column))
       );
 
@@ -44,7 +44,7 @@ export class BoardComponent {
     });
   }
 
-  setBoard(board: Board) {
+  setBoard(board: BoardData) {
     board.forEachSquareType((type, position) => {
       this.squareComponents[position.row][position.column].setType(type);
     });
@@ -71,10 +71,8 @@ export class BoardComponent {
   }
 
   clearHighlights() {
-    this.forEachSquare((square, position) => {
-      if (square.highlight) {
-        square.setHighlight(false);
-      }
+    this.forEachSquare((square, _) => {
+      square.setHighlight(false);
     });
   }
 }

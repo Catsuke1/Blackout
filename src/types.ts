@@ -18,21 +18,16 @@ export type Color = "white" | "black";
 
 export type Action = "piece" | "card";
 
-export type GameCondition = "blackwin" | "whitewin" | "nowin";
+export type WinCondition = "blackwin" | "whitewin" | "nowin";
 
 export type BoardData = SquareTypes[][];
-
-export type GameData = {
-  boardData: BoardData;
-  turnColor: Color;
-  turnAction: Action;
-};
 
 export type GameElement = {
   parent: HTMLElement;
   board: HTMLElement;
   turnColor: HTMLElement;
   turnAction: HTMLElement;
+  winner: HTMLElement;
 };
 
 export type GameSettings = {

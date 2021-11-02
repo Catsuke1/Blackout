@@ -1,21 +1,36 @@
 import { EventEmitter } from "events";
-import { Action, Color, GameData, GameSettings, SquareTypes } from "../types";
-import { Board } from "./Board";
-import { getValidQueenMoves } from "./Chess";
+import {
+  Action,
+  Color,
+  GameSettings,
+  SquareTypes,
+  WinCondition,
+} from "../types";
+import { BoardData } from "./BoardData";
+import { getValidQueenMoves } from "../chess";
 
-export class Game extends EventEmitter {
+export class GameData {
   gameSettings: GameSettings;
 
-  board: Board;
-  turnColor: Color;
-  turnAction: Action;
+  board: BoardData;
+
+  turn: {
+    color: Color;
+    action: Action;
+  } = {
+    color: undefined,
+    action: undefined,
+  };
+
+  win: WinCondition;
 
   constructor(gameSettings: GameSettings) {
-    super();
-
     this.gameSettings = gameSettings;
 
-    this.board = new Board(this.gameSettings.rows, this.gameSettings.columns);
+    this.board = new BoardData(
+      this.gameSettings.rows,
+      this.gameSettings.columns
+    );
 
     for (const whiteQueen of this.gameSettings.start.pieces.white) {
       this.board.setSquareType(whiteQueen, SquareTypes.WhitePiece);
@@ -25,28 +40,20 @@ export class Game extends EventEmitter {
       this.board.setSquareType(blackQueen, SquareTypes.BlackPiece);
     }
 
-    this.turnColor = this.gameSettings.start.color;
-    this.turnAction = this.gameSettings.start.action;
-  }
+    this.turn.color = this.gameSettings.start.color;
+    this.turn.action = this.gameSettings.start.action;
 
-  getData(): GameData {
-    return {
-      boardData: this.board.squareTypes,
-      turnColor: this.turnColor,
-      turnAction: this.turnAction,
-    };
+    this.win = this.checkGameCondition();
   }
 
   nextTurn() {
-    this.turnColor = this.turnColor === "black" ? "white" : "black";
+    this.turn.color = this.turn.color === "black" ? "white" : "black";
 
-    if (this.turnColor === this.gameSettings.start.color) {
-      this.turnAction = this.turnAction === "card" ? "piece" : "card";
+    if (this.turn.color === this.gameSettings.start.color) {
+      this.turn.action = this.turn.action === "card" ? "piece" : "card";
     }
 
-    const gameCondition = this.checkGameCondition();
-
-    this.emit("endTurn", gameCondition);
+    this.win = this.checkGameCondition();
   }
 
   checkGameCondition() {
@@ -70,7 +77,7 @@ export class Game extends EventEmitter {
     }
 
     if (whiteLost && blackLost) {
-      if (this.turnColor === "white") return "blackwin";
+      if (this.turn.color === "white") return "blackwin";
       return "whitewin";
     }
 

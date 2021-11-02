@@ -1,5 +1,5 @@
-import { Board } from "./Board";
-import { Position, SquareTypes, toPos } from "../types";
+import { BoardData } from "./data/BoardData";
+import { Position, SquareTypes, toPos } from "./types";
 
 export function isMoveValid(move: Position, validMoves: Position[]) {
   for (const validMove of validMoves) {
@@ -11,7 +11,7 @@ export function isMoveValid(move: Position, validMoves: Position[]) {
   return false;
 }
 
-export function getValidQueenMoves(board: Board, queenPosition: Position) {
+export function getValidQueenMoves(board: BoardData, queenPosition: Position) {
   const validMoves: Position[] = [];
 
   // top

@@ -1,6 +1,8 @@
-import { Game } from "./game/Game";
+import { GameComponent } from "./components/GameComponent";
+import { GameData } from "./data/GameData";
+import { LocalGame } from "./local/LocalGame";
 import { Connection } from "./multiplayer/Connection";
-import { Player } from "./multiplayer/Player";
+
 import { GameElement, GameSettings } from "./types";
 
 const gameSettings: GameSettings = {
@@ -36,24 +38,30 @@ const gameSettings: GameSettings = {
   },
 };
 
-export const game = new Game(gameSettings);
+const gameData = new GameData(gameSettings);
 
 const gameElement1: GameElement = {
   parent: document.querySelector("#player1"),
   board: document.querySelector("#player1>.board"),
   turnColor: document.querySelector("#player1>.gamestate .turnColor"),
   turnAction: document.querySelector("#player1>.gamestate .turnAction"),
+  winner: document.querySelector("#player1>.gamestate .winner"),
 };
 
-const gameElement2: GameElement = {
-  parent: document.querySelector("#player2"),
-  board: document.querySelector("#player2>.board"),
-  turnColor: document.querySelector("#player2>.gamestate .turnColor"),
-  turnAction: document.querySelector("#player2>.gamestate .turnAction"),
-};
+const gameComponent = new GameComponent(gameElement1, gameData);
 
-const player1 = new Player(gameElement1, game);
+const localGame = new LocalGame(gameData, gameComponent);
 
-const player2 = new Player(gameElement2, game);
+// const player1 = new Player(gameElement1, gameData);
 
-const connection = new Connection(player1, player2, game);
+// const gameElement2: GameElement = {
+//   parent: document.querySelector("#player2"),
+//   board: document.querySelector("#player2>.board"),
+//   turnColor: document.querySelector("#player2>.gamestate .turnColor"),
+//   turnAction: document.querySelector("#player2>.gamestate .turnAction"),
+//   winner: document.querySelector("#player2>.gamestate .winner"),
+// };
+
+// const player2 = new Player(gameElement2, game);
+
+// const connection = new Connection(player1, player2, game);

@@ -1,9 +1,10 @@
-import { Game } from "../game/Game";
-import { GameElement, Position } from "../types";
+import { GameData } from "../data/GameData";
+import { Action, Color, GameElement, Position } from "../types";
 import { BoardComponent } from "./BoardComponent";
+import { EventEmitter } from "events";
 
-export class GameComponent {
-  element: GameElement;
+export class GameComponent extends EventEmitter {
+  gameElement: GameElement;
 
   boardComponent: BoardComponent;
 
@@ -13,10 +14,21 @@ export class GameComponent {
     validMoves: Position[];
   };
 
-  constructor(element: GameElement, game: Game) {
-    this.element = element;
+  constructor(element: GameElement, game: GameData) {
+    super();
 
-    this.boardComponent = new BoardComponent(this.element.board, game.board);
+    this.gameElement = element;
+
+    this.boardComponent = new BoardComponent(
+      this.gameElement.board,
+      game.board
+    );
+
+    this.boardComponent.forEachSquare((squareComponent, position) => {
+      squareComponent.element.onclick = () => {
+        this.emit("click", position);
+      };
+    });
 
     this.activePiece = {
       wasClicked: false,
@@ -24,23 +36,21 @@ export class GameComponent {
       validMoves: undefined,
     };
 
-    this.displayTurnStatus(game);
+    this.setGame(game);
   }
 
-  setGame(game: Game) {
+  setGame(game: GameData) {
     this.boardComponent.setBoard(game.board);
-    this.displayTurnStatus(game);
-  }
 
-  displayTurnStatus(game: Game) {
-    this.element.turnColor.innerText = game.turnColor;
-    this.element.turnAction.innerText = game.turnAction;
-  }
+    if (game.win === "nowin") {
+      this.gameElement.turnColor.innerText = game.turn.color;
+      this.gameElement.turnAction.innerText = game.turn.action;
+    } else {
+      this.gameElement.turnColor.innerText = "";
+      this.gameElement.turnAction.innerText = "";
+    }
 
-  disableSquaresOnclick() {
-    this.boardComponent.forEachSquare((square, position) => {
-      square.element.onclick = () => {};
-    });
+    this.gameElement.winner.innerText = game.win;
   }
 
   setActivePiece(position: Position, validMoves: Position[]) {

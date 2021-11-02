@@ -1,7 +1,7 @@
 import { Position, SquareTypes, toPos } from "../types";
 import { forEach2d, make2dArray } from "../utils";
 
-export class Board {
+export class BoardData {
   rows: number;
   columns: number;
 
