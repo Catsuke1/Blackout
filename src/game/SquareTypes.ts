@@ -1,4 +1,4 @@
-export enum SquareTypes {
+export enum SquareType {
   Empty,
   WhitePiece,
   BlackPiece,

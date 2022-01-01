@@ -1,60 +1,60 @@
 <script lang="ts">
   import { createEventDispatcher } from "svelte";
   import { toPos } from "src/game/Position";
-  import { SquareTypes } from "src/game/SquareTypes";
+  import { SquareType } from "src/game/SquareTypes";
 
-  export let square: {
+  export let squareData: {
     row: number;
     column: number;
-    squareType: SquareTypes;
+    squareType: SquareType;
     isBlack: boolean;
   };
 
-  let highlight = "";
+  const classList = `square 
+  ${squareData.isBlack ? "black" : ""}`;
+
+  // reactive vars
+  let text: string = "";
+  let card: string = "";
+  let highlight: string = "";
 
   export const setHighlight = (flag: boolean) => {
     highlight = flag ? "highlight" : "";
   };
 
-  const classList = `square 
-  ${square.isBlack ? "black" : ""}`;
-
-  let text: string = "";
-  let card: string = "";
-
-  export const setType = (type: SquareTypes) => {
-    if (type === SquareTypes.Card) {
+  export const setType = (type: SquareType) => {
+    if (type === SquareType.Card) {
       card = "card";
     } else {
       card = "";
     }
 
     switch (type) {
-      case SquareTypes.Empty:
-      case SquareTypes.Card:
+      case SquareType.Empty:
+      case SquareType.Card:
         text = "";
         break;
 
-      case SquareTypes.WhitePiece:
+      case SquareType.WhitePiece:
         text = "♕";
         break;
 
-      case SquareTypes.BlackPiece:
+      case SquareType.BlackPiece:
         text = "♛";
         break;
     }
 
-    square.squareType = type;
+    squareData.squareType = type;
   };
 
-  setType(square.squareType);
+  setType(squareData.squareType);
 
   const dispatch = createEventDispatcher();
 
   const handleClick = () => {
     dispatch("square-click", {
-      position: toPos(square.row, square.column),
-      squareType: square.squareType,
+      position: toPos(squareData.row, squareData.column),
+      squareType: squareData.squareType,
     });
   };
 </script>
@@ -77,15 +77,19 @@
     background-color: #769656;
   }
 
-  .highlight.black {
-    background-color: #d46c51;
-  }
-
   .highlight {
     background-color: #ec7e6a;
   }
 
+  .highlight.black {
+    background-color: #d46c51;
+  }
+
   .card {
-    background-color: rgb(255, 167, 167);
+    background-color: rgb(82, 176, 220);
+  }
+
+  .card.black {
+    background-color: rgb(59, 153, 197);
   }
 </style>

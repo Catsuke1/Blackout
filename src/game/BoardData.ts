@@ -1,40 +1,45 @@
 import { make2dArray, forEach2d } from "./arrayUtils";
 import { IPosition } from "./Position";
 import { toPos } from "./Position";
-import { SquareTypes } from "./SquareTypes";
+import { SquareType } from "./SquareTypes";
 
-export class BoardData {
+export interface IBoardData {
   rows: number;
   columns: number;
+  squareTypes: SquareType[][];
 
-  squareTypes: SquareTypes[][];
+  getTypeAt(position: IPosition): SquareType;
+}
+
+export class BoardData implements IBoardData {
+  rows: number;
+  columns: number;
+  squareTypes: SquareType[][];
 
   constructor(rows: number, columns: number) {
     this.rows = rows;
     this.columns = columns;
 
-    this.squareTypes = make2dArray(rows, columns, SquareTypes.Empty);
+    this.squareTypes = make2dArray(rows, columns, SquareType.Empty);
   }
 
-  getSquareType(position: IPosition) {
+  getTypeAt(position: IPosition) {
     return this.squareTypes[position.row][position.column];
   }
 
-  setSquareType(position: IPosition, squareType: SquareTypes) {
+  setSquareType(position: IPosition, squareType: SquareType) {
     this.squareTypes[position.row][position.column] = squareType;
   }
 
-  forEachSquareType(
-    fn: (squareType: SquareTypes, position: IPosition) => void
-  ) {
+  forEachSquareType(fn: (squareType: SquareType, position: IPosition) => void) {
     forEach2d(this.squareTypes, (squareType, row, column) => {
       fn(squareType, toPos(row, column));
     });
   }
 
   movePiece(origin: IPosition, destination: IPosition) {
-    this.setSquareType(destination, this.getSquareType(origin));
-    this.setSquareType(origin, SquareTypes.Empty);
+    this.setSquareType(destination, this.getTypeAt(origin));
+    this.setSquareType(origin, SquareType.Empty);
   }
 
   getQueenPositions() {
@@ -47,9 +52,9 @@ export class BoardData {
     };
 
     this.forEachSquareType((type, position) => {
-      if (type === SquareTypes.WhitePiece) {
+      if (type === SquareType.WhitePiece) {
         queens.white.push(position);
-      } else if (type === SquareTypes.BlackPiece) {
+      } else if (type === SquareType.BlackPiece) {
         queens.black.push(position);
       }
     });

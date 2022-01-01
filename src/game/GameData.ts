@@ -1,7 +1,7 @@
 import { Action, Color, WinCondition } from "./types";
 import { BoardData } from "./BoardData";
 import { getValidQueenMoves } from "./chess";
-import { SquareTypes } from "./SquareTypes";
+import { SquareType } from "./SquareTypes";
 import { IGameSettings } from "./GameSettings";
 
 export class GameData {
@@ -28,11 +28,11 @@ export class GameData {
     );
 
     for (const whiteQueen of this.gameSettings.start.pieces.white) {
-      this.boardData.setSquareType(whiteQueen, SquareTypes.WhitePiece);
+      this.boardData.setSquareType(whiteQueen, SquareType.WhitePiece);
     }
 
     for (const blackQueen of this.gameSettings.start.pieces.black) {
-      this.boardData.setSquareType(blackQueen, SquareTypes.BlackPiece);
+      this.boardData.setSquareType(blackQueen, SquareType.BlackPiece);
     }
 
     this.turn.color = this.gameSettings.start.color;

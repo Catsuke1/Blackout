@@ -1,7 +1,7 @@
-import { BoardData } from "./BoardData";
+import { IBoardData } from "./BoardData";
 import { IPosition } from "./Position";
 import { toPos } from "./Position";
-import { SquareTypes } from "./SquareTypes";
+import { SquareType } from "./SquareTypes";
 
 export function isMoveValid(move: IPosition, validMoves: IPosition[]) {
   for (const validMove of validMoves) {
@@ -14,7 +14,7 @@ export function isMoveValid(move: IPosition, validMoves: IPosition[]) {
 }
 
 export function getValidQueenMoves(
-  boardData: BoardData,
+  boardData: IBoardData,
   queenPosition: IPosition
 ): IPosition[] {
   const validMoves: IPosition[] = [];
@@ -23,7 +23,7 @@ export function getValidQueenMoves(
   for (let row = queenPosition.row - 1; row > -1; row--) {
     const squarePosition = toPos(row, queenPosition.column);
 
-    if (boardData.getSquareType(squarePosition) !== SquareTypes.Empty) {
+    if (boardData.getTypeAt(squarePosition) !== SquareType.Empty) {
       break;
     }
 
@@ -34,7 +34,7 @@ export function getValidQueenMoves(
   for (let row = queenPosition.row + 1; row < boardData.rows; row++) {
     const squarePosition = toPos(row, queenPosition.column);
 
-    if (boardData.getSquareType(squarePosition) !== SquareTypes.Empty) {
+    if (boardData.getTypeAt(squarePosition) !== SquareType.Empty) {
       break;
     }
 
@@ -45,7 +45,7 @@ export function getValidQueenMoves(
   for (let column = queenPosition.column - 1; column > -1; column--) {
     const squarePosition = toPos(queenPosition.row, column);
 
-    if (boardData.getSquareType(squarePosition) !== SquareTypes.Empty) {
+    if (boardData.getTypeAt(squarePosition) !== SquareType.Empty) {
       break;
     }
 
@@ -60,7 +60,7 @@ export function getValidQueenMoves(
   ) {
     const squarePosition = toPos(queenPosition.row, column);
 
-    if (boardData.getSquareType(squarePosition) !== SquareTypes.Empty) {
+    if (boardData.getTypeAt(squarePosition) !== SquareType.Empty) {
       break;
     }
 
@@ -75,7 +75,7 @@ export function getValidQueenMoves(
   ) {
     const squarePosition = toPos(row, column);
 
-    if (boardData.getSquareType(squarePosition) !== SquareTypes.Empty) {
+    if (boardData.getTypeAt(squarePosition) !== SquareType.Empty) {
       break;
     }
 
@@ -90,7 +90,7 @@ export function getValidQueenMoves(
   ) {
     const squarePosition = toPos(row, column);
 
-    if (boardData.getSquareType(squarePosition) !== SquareTypes.Empty) {
+    if (boardData.getTypeAt(squarePosition) !== SquareType.Empty) {
       break;
     }
 
@@ -105,7 +105,7 @@ export function getValidQueenMoves(
   ) {
     const squarePosition = toPos(row, column);
 
-    if (boardData.getSquareType(squarePosition) !== SquareTypes.Empty) {
+    if (boardData.getTypeAt(squarePosition) !== SquareType.Empty) {
       break;
     }
 
@@ -120,7 +120,7 @@ export function getValidQueenMoves(
   ) {
     const squarePosition = toPos(row, column);
 
-    if (boardData.getSquareType(squarePosition) !== SquareTypes.Empty) {
+    if (boardData.getTypeAt(squarePosition) !== SquareType.Empty) {
       break;
     }
 
