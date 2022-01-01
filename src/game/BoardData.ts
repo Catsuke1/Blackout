@@ -1,5 +1,7 @@
-import { Position, SquareTypes, toPos } from "./types";
-import { forEach2d, make2dArray } from "./utils";
+import { make2dArray, forEach2d } from "./arrayUtils";
+import { IPosition } from "./Position";
+import { toPos } from "./Position";
+import { SquareTypes } from "./SquareTypes";
 
 export class BoardData {
   rows: number;
@@ -14,29 +16,31 @@ export class BoardData {
     this.squareTypes = make2dArray(rows, columns, SquareTypes.Empty);
   }
 
-  getSquareType(position: Position) {
+  getSquareType(position: IPosition) {
     return this.squareTypes[position.row][position.column];
   }
 
-  setSquareType(position: Position, squareType: SquareTypes) {
+  setSquareType(position: IPosition, squareType: SquareTypes) {
     this.squareTypes[position.row][position.column] = squareType;
   }
 
-  forEachSquareType(fn: (squareType: SquareTypes, position: Position) => void) {
+  forEachSquareType(
+    fn: (squareType: SquareTypes, position: IPosition) => void
+  ) {
     forEach2d(this.squareTypes, (squareType, row, column) => {
       fn(squareType, toPos(row, column));
     });
   }
 
-  movePiece(origin: Position, destination: Position) {
+  movePiece(origin: IPosition, destination: IPosition) {
     this.setSquareType(destination, this.getSquareType(origin));
     this.setSquareType(origin, SquareTypes.Empty);
   }
 
   getQueenPositions() {
     const queens: {
-      white: Position[];
-      black: Position[];
+      white: IPosition[];
+      black: IPosition[];
     } = {
       white: [],
       black: [],

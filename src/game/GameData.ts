@@ -1,18 +1,13 @@
-import { EventEmitter } from "events";
-import {
-  Action,
-  Color,
-  GameSettings,
-  SquareTypes,
-  WinCondition,
-} from "./types";
+import { Action, Color, WinCondition } from "./types";
 import { BoardData } from "./BoardData";
 import { getValidQueenMoves } from "./chess";
+import { SquareTypes } from "./SquareTypes";
+import { IGameSettings } from "./GameSettings";
 
 export class GameData {
-  gameSettings: GameSettings;
+  gameSettings: IGameSettings;
 
-  board: BoardData;
+  boardData: BoardData;
 
   turn: {
     color: Color;
@@ -22,28 +17,28 @@ export class GameData {
     action: undefined,
   };
 
-  win: WinCondition;
+  winCondition: WinCondition;
 
-  constructor(gameSettings: GameSettings) {
+  constructor(gameSettings: IGameSettings) {
     this.gameSettings = gameSettings;
 
-    this.board = new BoardData(
+    this.boardData = new BoardData(
       this.gameSettings.rows,
       this.gameSettings.columns
     );
 
     for (const whiteQueen of this.gameSettings.start.pieces.white) {
-      this.board.setSquareType(whiteQueen, SquareTypes.WhitePiece);
+      this.boardData.setSquareType(whiteQueen, SquareTypes.WhitePiece);
     }
 
     for (const blackQueen of this.gameSettings.start.pieces.black) {
-      this.board.setSquareType(blackQueen, SquareTypes.BlackPiece);
+      this.boardData.setSquareType(blackQueen, SquareTypes.BlackPiece);
     }
 
     this.turn.color = this.gameSettings.start.color;
     this.turn.action = this.gameSettings.start.action;
 
-    this.win = this.checkGameCondition();
+    this.winCondition = this.getWinCondition();
   }
 
   nextTurn() {
@@ -53,24 +48,24 @@ export class GameData {
       this.turn.action = this.turn.action === "card" ? "piece" : "card";
     }
 
-    this.win = this.checkGameCondition();
+    this.winCondition = this.getWinCondition();
   }
 
-  checkGameCondition() {
-    const queens = this.board.getQueenPositions();
+  getWinCondition() {
+    const queens = this.boardData.getQueenPositions();
 
     let whiteLost = true;
     let blackLost = true;
 
     for (const whiteQueen of queens.white) {
-      if (getValidQueenMoves(this.board, whiteQueen).length !== 0) {
+      if (getValidQueenMoves(this.boardData, whiteQueen).length !== 0) {
         whiteLost = false;
         break;
       }
     }
 
     for (const blackQueen of queens.black) {
-      if (getValidQueenMoves(this.board, blackQueen).length !== 0) {
+      if (getValidQueenMoves(this.boardData, blackQueen).length !== 0) {
         blackLost = false;
         break;
       }
