@@ -2,11 +2,15 @@
 
 Developing
 
-    npm start
+    npm run dev
 
 Build
 
     npm run build
+
+Preview build
+
+    npm run preview
 
 ### Planned Features
 
