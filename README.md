@@ -1,6 +1,12 @@
-# Blackout Game
+# ♟Blackout
 
-Developing
+### Play [here](https://jablazr.github.io/Blackout/)
+
+---
+
+### Developing
+
+Launch dev server
 
     npm run dev
 
