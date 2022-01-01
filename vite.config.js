@@ -10,4 +10,5 @@ export default defineConfig({
       src: path.resolve("./src"),
     },
   },
+  base: "/Blackout/",
 });
