@@ -1,10 +1,9 @@
 <script lang="ts">
-  import Game from "src/components/Game.svelte";
+  import Game from "./components/Game.svelte";
 </script>
 
 <div class="container">
   <h1>Blackout</h1>
-
   <Game />
 </div>
 
@@ -13,6 +12,11 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+  }
+
+  :global(body) {
+    color: #dbdbdb;
+    background-color: #181a1b;
   }
 
   .container {

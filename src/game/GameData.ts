@@ -1,8 +1,19 @@
-import { Action, Color, WinCondition } from "./types";
 import { BoardData } from "./BoardData";
 import { getValidQueenMoves } from "./chess";
 import { SquareType } from "./SquareTypes";
 import { IGameSettings } from "./GameSettings";
+
+export enum Color {
+  White,
+  Black,
+}
+
+export enum Action {
+  Piece,
+  Card,
+}
+
+type Winner = Color | null;
 
 export class GameData {
   gameSettings: IGameSettings;
@@ -17,11 +28,15 @@ export class GameData {
     action: undefined,
   };
 
-  winCondition: WinCondition;
+  winner: Winner;
 
   constructor(gameSettings: IGameSettings) {
     this.gameSettings = gameSettings;
 
+    this.reset();
+  }
+
+  reset(): void {
     this.boardData = new BoardData(
       this.gameSettings.rows,
       this.gameSettings.columns
@@ -38,20 +53,22 @@ export class GameData {
     this.turn.color = this.gameSettings.start.color;
     this.turn.action = this.gameSettings.start.action;
 
-    this.winCondition = this.getWinCondition();
+    this.winner = this.getWinner();
   }
 
-  nextTurn() {
-    this.turn.color = this.turn.color === "black" ? "white" : "black";
+  nextTurn(): void {
+    this.turn.color =
+      this.turn.color === Color.Black ? Color.White : Color.Black;
 
     if (this.turn.color === this.gameSettings.start.color) {
-      this.turn.action = this.turn.action === "card" ? "piece" : "card";
+      this.turn.action =
+        this.turn.action === Action.Card ? Action.Piece : Action.Card;
     }
 
-    this.winCondition = this.getWinCondition();
+    this.winner = this.getWinner();
   }
 
-  getWinCondition() {
+  getWinner(): Winner {
     const queens = this.boardData.getQueenPositions();
 
     let whiteLost = true;
@@ -72,18 +89,18 @@ export class GameData {
     }
 
     if (whiteLost && blackLost) {
-      if (this.turn.color === "white") return "blackwin";
-      return "whitewin";
+      if (this.turn.color === Color.White) return Color.Black;
+      return Color.White;
     }
 
     if (whiteLost) {
-      return "blackwin";
+      return Color.Black;
     }
 
     if (blackLost) {
-      return "whitewin";
+      return Color.White;
     }
 
-    return "nowin";
+    return null;
   }
 }

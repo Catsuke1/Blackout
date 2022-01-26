@@ -4,6 +4,12 @@
 
 ---
 
+### Credits
+
+Game Idea:
+
+[Max Lipski](https://github.com/Lipskiii), Max Neubauer, Moritz Linmann, another guy
+
 ### Developing
 
 Launch dev server

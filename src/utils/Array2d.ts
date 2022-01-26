@@ -14,7 +14,7 @@ export function make2dArray<T>(
   columns: number,
   initialValue?: T
 ) {
-  var array = new Array<T[]>(rows);
+  const array = new Array<T[]>(rows);
 
   for (let row = 0; row < rows; row++) {
     array[row] = new Array<T>(columns);

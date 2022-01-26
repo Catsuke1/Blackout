@@ -1,6 +1,6 @@
 import { IPosition, toPos } from "./Position";
-import { Color, Action } from "./types";
-import { Vector2 } from "./vectorUtils";
+import { Vector2 } from "../utils/Vector2";
+import { Color, Action } from "./GameData";
 
 export interface IGameSettings {
   rows: number;

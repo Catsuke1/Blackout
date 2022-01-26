@@ -1,33 +1,28 @@
 <script lang="ts">
+  import { Game } from "../stores";
   import { createEventDispatcher } from "svelte";
-  import { toPos } from "src/game/Position";
-  import { SquareType } from "src/game/SquareTypes";
+  import { toPos } from "../game/Position";
+  import { SquareType } from "../game/SquareTypes";
 
   export let squareData: {
     row: number;
     column: number;
-    squareType: SquareType;
     isBlack: boolean;
   };
 
-  const classList = `square 
-  ${squareData.isBlack ? "black" : ""}`;
+  export let squareSize = 5;
 
-  // reactive vars
   let text: string = "";
-  let card: string = "";
-  let highlight: string = "";
+
+  let highlight: boolean = false;
+  let card: boolean = false;
 
   export const setHighlight = (flag: boolean) => {
-    highlight = flag ? "highlight" : "";
+    highlight = flag;
   };
 
   export const setType = (type: SquareType) => {
-    if (type === SquareType.Card) {
-      card = "card";
-    } else {
-      card = "";
-    }
+    card = type === SquareType.Card;
 
     switch (type) {
       case SquareType.Empty:
@@ -44,32 +39,42 @@
         break;
     }
 
-    squareData.squareType = type;
+    return type;
   };
 
-  setType(squareData.squareType);
+  $: squareType = setType(
+    $Game.boardData.squareTypes[squareData.row][squareData.column]
+  );
 
   const dispatch = createEventDispatcher();
 
   const handleClick = () => {
     dispatch("square-click", {
       position: toPos(squareData.row, squareData.column),
-      squareType: squareData.squareType,
+      squareType: squareType,
     });
   };
 </script>
 
-<div class="{classList} {highlight} {card}" on:click={handleClick}>
+<div
+  class="square"
+  class:black={squareData.isBlack}
+  class:highlight
+  class:card
+  on:click={handleClick}
+  style="--squareSize: {squareSize}rem"
+>
   {text}
 </div>
 
 <style>
   .square {
-    width: 2rem;
-    height: 2rem;
-    font-size: 2rem;
+    width: var(--squareSize);
+    height: var(--squareSize);
+    font-size: var(--squareSize);
     line-height: 1;
 
+    color: black;
     background-color: #eeeed2;
   }
 

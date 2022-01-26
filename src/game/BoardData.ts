@@ -1,4 +1,4 @@
-import { make2dArray, forEach2d } from "./arrayUtils";
+import { make2dArray, forEach2d } from "../utils/Array2d";
 import { IPosition } from "./Position";
 import { toPos } from "./Position";
 import { SquareType } from "./SquareTypes";

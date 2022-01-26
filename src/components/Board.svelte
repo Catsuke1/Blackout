@@ -1,88 +1,45 @@
 <script lang="ts">
-  import { BoardData } from "src/game/BoardData";
-  import { IPosition, toPos } from "src/game/Position";
-  import { SquareType } from "src/game/SquareTypes";
-  import { forEach2d, make2dArray } from "src/game/arrayUtils";
-  import Square from "src/components/Square.svelte";
+  import Square from "../components/Square.svelte";
+  import { Game } from "../stores";
+  import { IPosition } from "../game/Position";
+  import { forEach2d, make2dArray } from "../utils/Array2d";
 
-  export let boardData: BoardData;
+  export let squareSize = 5;
 
-  let squares: Square[][] = make2dArray(boardData.rows, boardData.columns);
-
-  interface SquareComponentData {
-    row: number;
-    column: number;
-    squareType: SquareType;
-    isBlack: boolean;
-  }
-
-  const createSquareComponentsData = (): SquareComponentData[][] => {
-    const squaresData: SquareComponentData[][] = [];
-
-    let isBlack = false;
-
-    for (let row = 0; row < boardData.squareTypes.length; row++) {
-      const squareRow: SquareComponentData[] = [];
-
-      for (
-        let column = 0;
-        column < boardData.squareTypes[row].length;
-        column++
-      ) {
-        squareRow.push({
-          row,
-          column,
-          squareType: boardData.squareTypes[row][column],
-          isBlack,
-        });
-        isBlack = !isBlack;
-      }
-
-      squaresData.push(squareRow);
-      isBlack = !isBlack;
-    }
-
-    return squaresData;
-  };
-
-  const getSquare = (position: IPosition) => {
-    return squares[position.row][position.column];
-  };
-
-  const forEachSquare = (fn: (square: Square, position: IPosition) => void) => {
-    forEach2d(squares, (square, row, column) => {
-      fn(square, toPos(row, column));
-    });
-  };
-
-  export const setBoard = (boardData: BoardData) => {
-    boardData.forEachSquareType((type, position) => {
-      squares[position.row][position.column].setType(type);
-    });
-  };
+  const squares: Square[][] = make2dArray<Square>(
+    $Game.boardData.rows,
+    $Game.boardData.columns
+  );
 
   export const highlightSquares = (positions: IPosition[]) => {
     for (const position of positions) {
-      getSquare(position).setHighlight(true);
+      squares[position.row][position.column].setHighlight(true);
     }
   };
 
   export const clearHighlights = () => {
-    forEachSquare((square, _) => {
+    forEach2d(squares, (square, row, column) => {
       square.setHighlight(false);
     });
   };
 
-  const squareComponentsData = createSquareComponentsData();
+  const getIsBlack = (row: number, column: number) => {
+    return row % 2 ? !(column % 2) : !!(column % 2);
+  };
 </script>
 
 <div class="board">
-  {#each squareComponentsData as row}
+  {#each Array($Game.boardData.rows) as _, row}
     <div class="row">
-      {#each row as squareData}
+      {#each Array($Game.boardData.columns) as _, column}
         <Square
-          bind:this={squares[squareData.row][squareData.column]}
-          {squareData}
+          bind:this={squares[row][column]}
+          squareData={{
+            isBlack: getIsBlack(row, column),
+            column,
+            row,
+          }}
+          {squareSize}
           on:square-click
         />
       {/each}
