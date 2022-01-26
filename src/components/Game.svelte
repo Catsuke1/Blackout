@@ -1,12 +1,12 @@
 <script lang="ts">
   import Board from "./Board.svelte";
   import GameInfo from "./GameInfo.svelte";
-  import { Game } from "../stores";
+  import { Client, ConnectionStore, Game } from "../stores";
   import { isMoveValid } from "../game/chess";
   import { IPosition, Position } from "../game/Position";
   import { SquareType } from "../game/SquareTypes";
   import { SelectedPiece } from "../game/SelectedPiece";
-  import { Action, Color } from "src/game/GameData";
+  import { Action, Color } from "../game/GameData";
 
   let board: Board;
 
@@ -14,7 +14,7 @@
 
   let gameOver = false;
 
-  const nextTurn = () => {
+  const endTurn = () => {
     Game.update((currentGame) => {
       currentGame.nextTurn();
 
@@ -22,6 +22,26 @@
 
       return currentGame;
     });
+
+    if ($ConnectionStore.connected) {
+      $Client.connectionClient.send(
+        $Game.boardData.squareTypes,
+        $ConnectionStore.connection.id
+      );
+    }
+  };
+
+  $Client.connectionClient.recieve = (squareTypes, id) => {
+    if (id === $ConnectionStore.connection.id) {
+      Game.update((currentGame) => {
+        currentGame.boardData.squareTypes = squareTypes;
+        currentGame.nextTurn();
+
+        gameOver = currentGame.winner !== null;
+
+        return currentGame;
+      });
+    }
   };
 
   const selectPiece = (position: IPosition) => {
@@ -38,6 +58,7 @@
 
   const handleSquareClick = (event: any) => {
     if (gameOver) return;
+    if ($ConnectionStore.color !== $Game.turn.color) return;
 
     const {
       position,
@@ -49,14 +70,14 @@
         if ($Game.turn.action === Action.Card) {
           $Game.boardData.setSquareType(position, SquareType.Card);
 
-          nextTurn();
+          endTurn();
         }
 
         if ($Game.turn.action === Action.Piece && selectedPiece.isSet) {
           if (isMoveValid(position, selectedPiece.validMoves)) {
             $Game.boardData.movePiece(selectedPiece.position, position);
 
-            nextTurn();
+            endTurn();
           }
 
           unselectPiece();
