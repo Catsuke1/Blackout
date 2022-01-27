@@ -5,6 +5,7 @@
   import { Client, Multiplayer, Game } from "../stores";
   import ConnectionDetails from "./ConnectionDetails.svelte";
   import { Who } from "../game/MultiplayerHandler";
+  import Toggle from "src/ui/toggle.svelte";
 
   let createdPeer = false;
   let open: Promise<string>;
@@ -17,21 +18,10 @@
   let connectionId = "";
   let connection: Connection;
 
+  let isBlack = false;
+
   $Client.openTriggers.push(() => {
-    $Client.remoteConnection = (remoteConnection) => {
-      connection = remoteConnection;
-
-      Multiplayer.update((currentHandler) => {
-        currentHandler.setupConnection(connection, Color.Black);
-
-        return currentHandler;
-      });
-
-      Game.update((currentGame) => {
-        currentGame.reset();
-        return currentGame;
-      });
-    };
+    $Client.remoteConnection = (remoteConnection) => {};
 
     $Client.connectionClient.closeConnection = (connectionId) => {
       if (connectionId === $Multiplayer.connectionId) {
@@ -42,6 +32,27 @@
         });
       }
     };
+
+    $Client.connectionClient.recievers.push((payload, id) => {
+      if (payload?.type === "setup") {
+        const connection = $Client.connectionClient.list.get(id);
+
+        const color =
+          payload.data.color === Color.White ? Color.Black : Color.White;
+
+        Multiplayer.update((currentHandler) => {
+          currentHandler.setupConnection(connection, color);
+
+          return currentHandler;
+        });
+
+        Game.update((currentGame) => {
+          currentGame.set(payload.data.gameData);
+
+          return currentGame;
+        });
+      }
+    });
   });
 
   const handleConnect = async () => {
@@ -54,8 +65,10 @@
       return;
     }
 
+    const color = isBlack ? Color.Black : Color.White;
+
     Multiplayer.update((currentHandler) => {
-      currentHandler.setupConnection(connection, Color.White);
+      currentHandler.setupConnection(connection, color);
 
       return currentHandler;
     });
@@ -64,6 +77,14 @@
       currentGame.reset();
       return currentGame;
     });
+
+    $Client.connectionClient.send(
+      {
+        type: "setup",
+        data: { gameData: $Game.get(), color },
+      },
+      $Multiplayer.connectionId
+    );
   };
 
   const handleDisconnect = () => {
@@ -87,6 +108,12 @@
 
       <label for="connectionId">Connection ID</label>
       <input type="text" id="connectionId" bind:value={connectionId} />
+
+      <div>
+        Choose a color
+
+        <Toggle text={["White", "Black"]} bind:isOn={isBlack} />
+      </div>
 
       <button type="button" on:click={handleConnect}>Connect</button>
 
