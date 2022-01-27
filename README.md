@@ -27,4 +27,9 @@ Preview build
 ### Planned Features
 
 - Choose the initial starting positions on the 1st and 8th rank
-- Multiplayer
+- UI update (draggable pieces, change color themes etc.)
+
+Multiplayer
+
+- scoreboard for the current session
+- side swaps
