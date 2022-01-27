@@ -5,11 +5,21 @@ import { ConnectionClient } from "./ConnectionClient";
 export class PeerClient {
   private me: Peer;
 
+  options: PeerJSOption;
+
   connectionClient!: ConnectionClient;
   id: string | undefined;
 
   constructor(options?: PeerJSOption) {
-    this.me = new Peer(undefined, options);
+    this.options = options;
+  }
+
+  /**
+   * Opens the peer and creates a connection client
+   * @returns the id of the peer
+   */
+  async open(): Promise<string> {
+    this.me = new Peer(undefined, this.options);
     this.connectionClient = new ConnectionClient(this.me);
 
     // Emitted when the peer is destroyed
@@ -36,13 +46,7 @@ export class PeerClient {
 
       this.remoteConnection(connection);
     });
-  }
 
-  /**
-   * Opens the peer and creates a connection client
-   * @returns the id of the peer
-   */
-  async open(): Promise<string> {
     return await new Promise<string>((resolve, reject) => {
       this.me.on("open", (id) => {
         this.id = id;
