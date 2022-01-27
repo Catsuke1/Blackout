@@ -7,15 +7,25 @@ export class ConnectionClient {
 
   list: ConnectionList;
 
+  /**
+   * Push functions to the recievers array
+   * to add recievers
+   */
+  recievers: ((data: any, id: string) => void)[];
+
   constructor(peer: Peer) {
     this.me = peer;
 
     this.list = new ConnectionList();
+
+    this.recievers = [];
   }
 
   setupDataConnection(connection: Connection): void {
     connection.getDataConnection().on("data", (data) => {
-      this.recieve(data, connection.id);
+      for (const reciever of this.recievers) {
+        reciever(data, connection.id);
+      }
     });
 
     connection.getDataConnection().on("close", () => {
@@ -88,11 +98,4 @@ export class ConnectionClient {
       }
     });
   }
-
-  /**
-   * Implement this method to access data recieved from connections
-   * @param _data data recieved from the connection
-   * @param _id id of the peer on the other end
-   */
-  recieve(_data: any, _id: string): void {}
 }

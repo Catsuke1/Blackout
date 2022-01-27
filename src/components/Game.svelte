@@ -31,10 +31,7 @@
     }
   };
 
-  $Client.connectionClient.recieve = (
-    payload: any /*will have to check if this is game data or something else*/,
-    id
-  ) => {
+  $Client.connectionClient.recievers.push((payload, id) => {
     if (id === $Multiplayer.connectionId) {
       if (payload?.type === "game") {
         Game.update((currentGame) => {
@@ -51,7 +48,7 @@
         });
       }
     }
-  };
+  });
 
   const selectPiece = (position: IPosition) => {
     selectedPiece.set(position, $Game.boardData);
