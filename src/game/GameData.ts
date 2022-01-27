@@ -15,6 +15,14 @@ export enum Action {
 
 type Winner = Color | null;
 
+export interface GameDataPayload {
+  board: SquareType[][];
+  turn: {
+    color: Color;
+    action: Action;
+  };
+}
+
 export class GameData {
   gameSettings: IGameSettings;
 
@@ -34,6 +42,18 @@ export class GameData {
     this.gameSettings = gameSettings;
 
     this.reset();
+  }
+
+  get(): GameDataPayload {
+    return {
+      board: this.boardData.squareTypes,
+      turn: this.turn,
+    };
+  }
+
+  set(gameDataPayload: GameDataPayload): void {
+    this.boardData.squareTypes = gameDataPayload.board;
+    this.turn = gameDataPayload.turn;
   }
 
   reset(): void {

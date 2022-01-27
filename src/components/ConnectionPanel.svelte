@@ -2,7 +2,8 @@
   import { Color } from "../game/GameData";
 
   import { Connection } from "../connection/Connection";
-  import { Client, ConnectionStore, Game } from "../stores";
+  import { Client, Multiplayer, Game } from "../stores";
+  import ConnectionDetails from "./ConnectionDetails.svelte";
 
   let open = $Client.open();
 
@@ -14,10 +15,10 @@
     connection = remoteConnection;
     connected = true;
 
-    ConnectionStore.set({
-      connected,
-      connection,
-      color: Color.Black,
+    Multiplayer.update((currentHandler) => {
+      currentHandler.setupConnection(connection, Color.Black);
+
+      return currentHandler;
     });
 
     Game.update((currentGame) => {
@@ -36,10 +37,10 @@
 
     connected = true;
 
-    ConnectionStore.set({
-      connected,
-      connection,
-      color: Color.White,
+    Multiplayer.update((currentHandler) => {
+      currentHandler.setupConnection(connection, Color.White);
+
+      return currentHandler;
     });
 
     Game.update((currentGame) => {
@@ -61,9 +62,7 @@
 
     <button type="button" on:click={handleConnect}>Connect</button>
 
-    {#if connected}
-      <p>Connected to {connection.id}</p>
-    {/if}
+    <ConnectionDetails />
   {/await}
 </div>
 

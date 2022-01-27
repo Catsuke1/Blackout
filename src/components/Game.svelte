@@ -1,46 +1,55 @@
 <script lang="ts">
   import Board from "./Board.svelte";
   import GameInfo from "./GameInfo.svelte";
-  import { Client, ConnectionStore, Game } from "../stores";
+  import { Client, Multiplayer, Game } from "../stores";
   import { isMoveValid } from "../game/chess";
   import { IPosition, Position } from "../game/Position";
   import { SquareType } from "../game/SquareTypes";
   import { SelectedPiece } from "../game/SelectedPiece";
   import { Action, Color } from "../game/GameData";
+  import { Who } from "../game/MultiplayerHandler";
 
   let board: Board;
 
   const selectedPiece = new SelectedPiece();
 
-  let gameOver = false;
-
   const endTurn = () => {
     Game.update((currentGame) => {
       currentGame.nextTurn();
 
-      gameOver = currentGame.winner !== null;
-
       return currentGame;
     });
 
-    if ($ConnectionStore.connected) {
+    if ($Multiplayer.connected) {
       $Client.connectionClient.send(
-        $Game.boardData.squareTypes,
-        $ConnectionStore.connection.id
+        {
+          type: "game",
+          data: $Game.get(),
+        },
+        $Multiplayer.connectionId
       );
     }
   };
 
-  $Client.connectionClient.recieve = (squareTypes, id) => {
-    if (id === $ConnectionStore.connection.id) {
-      Game.update((currentGame) => {
-        currentGame.boardData.squareTypes = squareTypes;
-        currentGame.nextTurn();
+  $Client.connectionClient.recieve = (
+    payload: any /*will have to check if this is game data or something else*/,
+    id
+  ) => {
+    if (id === $Multiplayer.connectionId) {
+      if (payload?.type === "game") {
+        Game.update((currentGame) => {
+          /*not robust, data may not exist, will pass for now*/
+          currentGame.set(payload.data);
 
-        gameOver = currentGame.winner !== null;
+          return currentGame;
+        });
+      } else if (payload?.type === "gameReset") {
+        Multiplayer.update((currentMultiplayer) => {
+          currentMultiplayer.requestNewGame(Who.Them);
 
-        return currentGame;
-      });
+          return currentMultiplayer;
+        });
+      }
     }
   };
 
@@ -57,8 +66,10 @@
   };
 
   const handleSquareClick = (event: any) => {
-    if (gameOver) return;
-    if ($ConnectionStore.color !== $Game.turn.color) return;
+    if ($Game.winner !== null) return;
+    if ($Multiplayer.connected) {
+      if ($Multiplayer.myColor !== $Game.turn.color) return;
+    }
 
     const {
       position,
@@ -133,12 +144,44 @@
   };
 
   const handleNewGame = () => {
-    Game.update((currentGame) => {
-      currentGame.reset();
-      return currentGame;
-    });
+    if ($Multiplayer.connected) {
+      let doNewGame: boolean;
 
-    gameOver = false;
+      Multiplayer.update((currentMultiplayer) => {
+        doNewGame = currentMultiplayer.requestNewGame(Who.Me);
+
+        return currentMultiplayer;
+      });
+
+      $Client.connectionClient.send(
+        {
+          type: "gameReset",
+          data: null,
+        },
+        $Multiplayer.connectionId
+      );
+
+      if (doNewGame) {
+        Game.update((currentGame) => {
+          currentGame.reset();
+          return currentGame;
+        });
+
+        $Client.connectionClient.send(
+          {
+            type: "game",
+            data: $Game.get(),
+          },
+          $Multiplayer.connectionId
+        );
+      }
+    } else {
+      // is not connected
+      Game.update((currentGame) => {
+        currentGame.reset();
+        return currentGame;
+      });
+    }
   };
 </script>
 

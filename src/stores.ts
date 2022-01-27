@@ -2,7 +2,7 @@ import { writable } from "svelte/store";
 import { createGameSettings } from "./game/GameSettings";
 import { Action, Color, GameData } from "./game/GameData";
 import { PeerClient } from "./connection/PeerClient";
-import { Connection } from "./connection/Connection";
+import { MultiplayerHandler } from "./game/MultiplayerHandler";
 
 const gameSettings = createGameSettings(
   8,
@@ -23,14 +23,4 @@ export const Game = writable(new GameData(gameSettings));
 
 export const Client = writable(new PeerClient());
 
-const connectionState: {
-  connected: boolean;
-  connection: Connection;
-  color: Color;
-} = {
-  connected: false,
-  connection: undefined,
-  color: undefined,
-};
-
-export const ConnectionStore = writable(connectionState);
+export const Multiplayer = writable(new MultiplayerHandler());
