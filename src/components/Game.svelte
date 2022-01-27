@@ -13,6 +13,20 @@
 
   const selectedPiece = new SelectedPiece();
 
+  const handleGameUpdate = () => {
+    if ($Game.winner !== null) {
+      Multiplayer.update((currentMultiplayer) => {
+        if ($Game.winner === currentMultiplayer.myColor) {
+          currentMultiplayer.setWinner(Who.Me);
+        } else {
+          currentMultiplayer.setWinner(Who.Them);
+        }
+
+        return currentMultiplayer;
+      });
+    }
+  };
+
   const endTurn = () => {
     Game.update((currentGame) => {
       currentGame.nextTurn();
@@ -29,7 +43,32 @@
         $Multiplayer.connectionId
       );
     }
+
+    handleGameUpdate();
   };
+
+  $Client.openTriggers.push(() => {
+    $Client.connectionClient.recievers.push((payload, id) => {
+      if (id === $Multiplayer.connectionId) {
+        if (payload?.type === "game") {
+          Game.update((currentGame) => {
+            /*not robust, data may not exist, will pass for now*/
+            currentGame.set(payload.data);
+
+            return currentGame;
+          });
+
+          handleGameUpdate();
+        } else if (payload?.type === "gameReset") {
+          Multiplayer.update((currentMultiplayer) => {
+            currentMultiplayer.requestNewGame(Who.Them);
+
+            return currentMultiplayer;
+          });
+        }
+      }
+    });
+  });
 
   const selectPiece = (position: IPosition) => {
     selectedPiece.set(position, $Game.boardData);

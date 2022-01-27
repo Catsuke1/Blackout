@@ -3,6 +3,7 @@
 
   import { Color } from "../game/GameData";
   import { Multiplayer } from "../stores";
+  import Scoreboard from "./Scoreboard.svelte";
 
   $: voteExists = $Multiplayer.newGameRequest !== undefined;
   $: who = (() => {
@@ -27,3 +28,5 @@
 {#if voteExists}
   <p>{who} (1/2)</p>
 {/if}
+
+<Scoreboard />

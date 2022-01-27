@@ -12,12 +12,14 @@
   onMount(() => {
     consoleEl.set(ct`blue${"Chat"}`);
 
-    $Client.connectionClient.recievers.push((payload, id) => {
-      if (id === $Multiplayer.connectionId) {
-        if (payload?.type === "text") {
-          consoleEl.append(ct`pink ${"<Opponent> "} black${payload.data}`);
+    $Client.openTriggers.push(() => {
+      $Client.connectionClient.recievers.push((payload, id) => {
+        if (id === $Multiplayer.connectionId) {
+          if (payload?.type === "text") {
+            consoleEl.append(ct`pink ${"<Opponent> "} black${payload.data}`);
+          }
         }
-      }
+      });
     });
   });
 

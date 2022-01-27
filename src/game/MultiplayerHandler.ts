@@ -1,3 +1,4 @@
+import { Vector2 } from "src/utils/Vector2";
 import { Connection } from "../connection/Connection";
 import { Color } from "./GameData";
 
@@ -10,8 +11,11 @@ export class MultiplayerHandler {
   connectionId: string;
   connected: boolean;
   myColor: Color;
+  playerNumber: number;
 
   newGameRequest: Who;
+
+  scoreboard: Vector2<number>;
 
   constructor() {
     this.connectionId = undefined;
@@ -19,12 +23,16 @@ export class MultiplayerHandler {
     this.myColor = undefined;
 
     this.newGameRequest = undefined;
+
+    this.scoreboard = [0, 0];
   }
 
   setupConnection(connection: Connection, myColor: Color): void {
     this.connectionId = connection.id;
     this.connected = true;
     this.myColor = myColor;
+
+    this.scoreboard = [0, 0];
   }
 
   closeConnection(): void {
@@ -33,6 +41,8 @@ export class MultiplayerHandler {
     this.myColor = undefined;
 
     this.newGameRequest = undefined;
+
+    this.scoreboard = [0, 0];
   }
 
   requestNewGame(who: Who): boolean {
@@ -51,5 +61,13 @@ export class MultiplayerHandler {
     }
 
     return false;
+  }
+
+  setWinner(who: Who): void {
+    if (who === Who.Me) {
+      this.scoreboard[0]++;
+    } else {
+      this.scoreboard[1]++;
+    }
   }
 }

@@ -12,56 +12,37 @@
   const handleCreatePeer = async () => {
     createdPeer = true;
     open = $Client.open();
-
-    open.then(() => {
-      $Client.remoteConnection = (remoteConnection) => {
-        connection = remoteConnection;
-
-        Multiplayer.update((currentHandler) => {
-          currentHandler.setupConnection(connection, Color.Black);
-
-          return currentHandler;
-        });
-
-        Game.update((currentGame) => {
-          currentGame.reset();
-          return currentGame;
-        });
-      };
-
-      $Client.connectionClient.closeConnection = (connectionId) => {
-        if (connectionId === $Multiplayer.connectionId) {
-          Multiplayer.update((currentMultiplayer) => {
-            currentMultiplayer.closeConnection();
-
-            return currentMultiplayer;
-          });
-        }
-      };
-
-      $Client.connectionClient.recievers.push((payload, id) => {
-        if (id === $Multiplayer.connectionId) {
-          if (payload?.type === "game") {
-            Game.update((currentGame) => {
-              /*not robust, data may not exist, will pass for now*/
-              currentGame.set(payload.data);
-
-              return currentGame;
-            });
-          } else if (payload?.type === "gameReset") {
-            Multiplayer.update((currentMultiplayer) => {
-              currentMultiplayer.requestNewGame(Who.Them);
-
-              return currentMultiplayer;
-            });
-          }
-        }
-      });
-    });
   };
 
   let connectionId = "";
   let connection: Connection;
+
+  $Client.openTriggers.push(() => {
+    $Client.remoteConnection = (remoteConnection) => {
+      connection = remoteConnection;
+
+      Multiplayer.update((currentHandler) => {
+        currentHandler.setupConnection(connection, Color.Black);
+
+        return currentHandler;
+      });
+
+      Game.update((currentGame) => {
+        currentGame.reset();
+        return currentGame;
+      });
+    };
+
+    $Client.connectionClient.closeConnection = (connectionId) => {
+      if (connectionId === $Multiplayer.connectionId) {
+        Multiplayer.update((currentMultiplayer) => {
+          currentMultiplayer.closeConnection();
+
+          return currentMultiplayer;
+        });
+      }
+    };
+  });
 
   const handleConnect = async () => {
     try {

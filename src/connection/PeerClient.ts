@@ -10,8 +10,12 @@ export class PeerClient {
   connectionClient!: ConnectionClient;
   id: string | undefined;
 
+  openTriggers: (() => void)[];
+
   constructor(options?: PeerJSOption) {
     this.options = options;
+
+    this.openTriggers = [];
   }
 
   /**
@@ -50,6 +54,10 @@ export class PeerClient {
     return await new Promise<string>((resolve, reject) => {
       this.me.on("open", (id) => {
         this.id = id;
+
+        for (const trigger of this.openTriggers) {
+          trigger();
+        }
 
         resolve(id);
       });
