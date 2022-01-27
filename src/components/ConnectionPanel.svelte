@@ -46,7 +46,9 @@
 
   const handleConnect = async () => {
     try {
-      connection = await $Client.connectionClient.connect(connectionId);
+      connection = await $Client.connectionClient.connect(connectionId, {
+        reliable: true,
+      });
     } catch {
       console.log("failed to connect!");
       return;

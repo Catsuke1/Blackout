@@ -18,9 +18,33 @@
           if (payload?.type === "text") {
             consoleEl.append(ct`pink ${"<Opponent> "} black${payload.data}`);
           }
+
+          if (payload?.type === "textInfo") {
+            consoleEl.append(ct`blue${payload.data}`);
+          }
         }
       });
     });
+
+    window.onbeforeunload = () => {
+      if ($Multiplayer.connected) {
+        $Client.connectionClient.send(
+          {
+            type: "textInfo",
+            data: "Opponent left.",
+          },
+          $Multiplayer.connectionId
+        );
+      }
+
+      $Client.connectionClient.disconnectAll();
+
+      Multiplayer.update((currentMultiplayer) => {
+        currentMultiplayer.closeConnection();
+
+        return currentMultiplayer;
+      });
+    };
   });
 
   const inputHandler = (input: string) => {

@@ -36,6 +36,8 @@ export class ConnectionClient {
 
     connection.getDataConnection().on("error", (_error) => {
       this.list.remove(connection);
+
+      this.closeConnection(connection.id);
     });
   }
 
