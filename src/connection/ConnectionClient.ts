@@ -30,6 +30,8 @@ export class ConnectionClient {
 
     connection.getDataConnection().on("close", () => {
       this.list.remove(connection);
+
+      this.closeConnection(connection.id);
     });
 
     connection.getDataConnection().on("error", (_error) => {
@@ -61,6 +63,10 @@ export class ConnectionClient {
     return connection;
   }
 
+  /**
+   * Disconnect from a connection
+   * @param id Connection id
+   */
   disconnect(id: string): void {
     const connection = this.list.get(id);
     connection.close();
@@ -68,6 +74,9 @@ export class ConnectionClient {
     this.list.remove(connection);
   }
 
+  /**
+   * Disconnect from all connections
+   */
   disconnectAll(): void {
     this.list.getAll().forEach((connection) => {
       connection.close();
@@ -76,6 +85,11 @@ export class ConnectionClient {
     this.list.removeAll();
   }
 
+  /**
+   * Send data to specific connections
+   * @param data any data
+   * @param ids connection ids
+   */
   send(data: any, ...ids: string[]): void {
     ids.forEach((id) => {
       const connection = this.list.get(id);
@@ -89,6 +103,10 @@ export class ConnectionClient {
     });
   }
 
+  /**
+   * Send data to all connections
+   * @param data any data
+   */
   sendAll(data: any): void {
     this.list.getAll().forEach((connection) => {
       if (connection.isOpen()) {
@@ -98,4 +116,11 @@ export class ConnectionClient {
       }
     });
   }
+
+  /**
+   * Implement this method to get the connection id of
+   * disconnected connections
+   * @param connectionId connection id
+   */
+  closeConnection(connectionId: string) {}
 }

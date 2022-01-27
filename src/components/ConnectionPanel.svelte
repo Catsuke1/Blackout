@@ -8,12 +8,10 @@
   let open = $Client.open();
 
   let connectionId = "";
-  let connected = false;
   let connection: Connection;
 
   $Client.remoteConnection = (remoteConnection) => {
     connection = remoteConnection;
-    connected = true;
 
     Multiplayer.update((currentHandler) => {
       currentHandler.setupConnection(connection, Color.Black);
@@ -27,6 +25,16 @@
     });
   };
 
+  $Client.connectionClient.closeConnection = (connectionId) => {
+    if (connectionId === $Multiplayer.connectionId) {
+      Multiplayer.update((currentMultiplayer) => {
+        currentMultiplayer.closeConnection();
+
+        return currentMultiplayer;
+      });
+    }
+  };
+
   const handleConnect = async () => {
     try {
       connection = await $Client.connectionClient.connect(connectionId);
@@ -34,8 +42,6 @@
       console.log("failed to connect!");
       return;
     }
-
-    connected = true;
 
     Multiplayer.update((currentHandler) => {
       currentHandler.setupConnection(connection, Color.White);
@@ -46,6 +52,16 @@
     Game.update((currentGame) => {
       currentGame.reset();
       return currentGame;
+    });
+  };
+
+  const handleDisconnect = () => {
+    $Client.connectionClient.disconnect($Multiplayer.connectionId);
+
+    Multiplayer.update((currentMultiplayer) => {
+      currentMultiplayer.closeConnection();
+
+      return currentMultiplayer;
     });
   };
 </script>
@@ -62,7 +78,11 @@
 
     <button type="button" on:click={handleConnect}>Connect</button>
 
-    <ConnectionDetails />
+    {#if $Multiplayer.connected}
+      <ConnectionDetails />
+
+      <button type="button" on:click={handleDisconnect}>Disconnect</button>
+    {/if}
   {/await}
 </div>
 

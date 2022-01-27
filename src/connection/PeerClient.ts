@@ -61,14 +61,15 @@ export class PeerClient {
   }
 
   /**
-   * Close the connection to the server
+   * Close the connection to the signalling server
    */
   disconnect(): void {
     this.me.disconnect();
   }
 
   /**
-   * Close the connection to the server and terminate all existing connections
+   * Close the connection to the signalling server
+   * and terminate all existing connections
    */
   destroy(): void {
     this.me.destroy();

@@ -46,6 +46,10 @@ export class Connection {
     return this.dataConnection.open;
   }
 
+  /**
+   * Closes the data connection gracefully,
+   * cleaning up underlying DataChannels and PeerConnections.
+   */
   close(): void {
     this.dataConnection.close();
   }

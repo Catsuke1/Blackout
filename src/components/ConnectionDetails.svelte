@@ -18,14 +18,12 @@
   })();
 </script>
 
-{#if $Multiplayer.connected}
-  <p>Connected to {$Multiplayer.connectionId}</p>
+<p>Connected to {$Multiplayer.connectionId}</p>
 
-  <p>
-    You are {$Multiplayer.myColor === Color.White ? "white" : "black"}.
-  </p>
+<p>
+  You are {$Multiplayer.myColor === Color.White ? "white" : "black"}.
+</p>
 
-  {#if voteExists}
-    <p>{who} (1/2)</p>
-  {/if}
+{#if voteExists}
+  <p>{who} (1/2)</p>
 {/if}
