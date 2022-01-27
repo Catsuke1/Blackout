@@ -54,6 +54,8 @@ export class GameData {
   set(gameDataPayload: GameDataPayload): void {
     this.boardData.squareTypes = gameDataPayload.board;
     this.turn = gameDataPayload.turn;
+
+    this.winner = this.getWinner();
   }
 
   reset(): void {
