@@ -5,7 +5,7 @@
   import { Client, Multiplayer, Game } from "../stores";
   import ConnectionDetails from "./ConnectionDetails.svelte";
   import { Who } from "../game/MultiplayerHandler";
-  import Toggle from "src/ui/toggle.svelte";
+  import Toggle from "../ui/toggle.svelte";
 
   let createdPeer = false;
   let open: Promise<string>;
