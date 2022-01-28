@@ -34,6 +34,19 @@
     };
 
     $Client.connectionClient.recievers.push((payload, id) => {
+      if ($Multiplayer.connected && $Multiplayer.connectionId !== id) {
+        $Client.connectionClient.send(
+          {
+            type: "textInfo",
+            data: "This peer is already connected to somebody else!",
+          },
+          id
+        );
+
+        $Client.connectionClient.list.get(id).close();
+        return;
+      }
+
       if (payload?.type === "setup") {
         const connection = $Client.connectionClient.list.get(id);
 
@@ -103,24 +116,24 @@
     {#await open}
       <p>Creating peer...</p>
     {:then id}
-      <p>Created peer with id:</p>
-      <pre>{id}</pre>
-
-      <label for="connectionId">Connection ID</label>
-      <input type="text" id="connectionId" bind:value={connectionId} />
-
-      <div>
-        Choose a color
-
-        <Toggle text={["White", "Black"]} bind:isOn={isBlack} />
-      </div>
-
-      <button type="button" on:click={handleConnect}>Connect</button>
-
       {#if $Multiplayer.connected}
         <ConnectionDetails />
 
         <button type="button" on:click={handleDisconnect}>Disconnect</button>
+      {:else}
+        <p>Created peer with id:</p>
+        <pre>{id}</pre>
+
+        <label for="connectionId">Connection ID</label>
+        <input type="text" id="connectionId" bind:value={connectionId} />
+
+        <div>
+          Choose a color
+
+          <Toggle text={["White", "Black"]} bind:isOn={isBlack} />
+        </div>
+
+        <button type="button" on:click={handleConnect}>Connect</button>
       {/if}
     {/await}
   {:else}

@@ -50,6 +50,7 @@
   $Client.openTriggers.push(() => {
     $Client.connectionClient.recievers.push((payload, id) => {
       if (id === $Multiplayer.connectionId) {
+        // check if it is the correct connection
         if (payload?.type === "game") {
           Game.update((currentGame) => {
             /*not robust, data may not exist, will pass for now*/
