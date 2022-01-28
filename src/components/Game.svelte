@@ -61,7 +61,9 @@
           handleGameUpdate();
         } else if (payload?.type === "gameReset") {
           Multiplayer.update((currentMultiplayer) => {
-            currentMultiplayer.requestNewGame(Who.Them);
+            if (currentMultiplayer.requestNewGame(Who.Them)) {
+              currentMultiplayer.swapColors();
+            }
 
             return currentMultiplayer;
           });
@@ -191,6 +193,12 @@
           },
           $Multiplayer.connectionId
         );
+
+        Multiplayer.update((currentMultiplayer) => {
+          currentMultiplayer.swapColors();
+
+          return currentMultiplayer;
+        });
       }
     } else {
       // is not connected

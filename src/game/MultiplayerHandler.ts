@@ -70,4 +70,12 @@ export class MultiplayerHandler {
       this.scoreboard[1]++;
     }
   }
+
+  swapColors(): void {
+    if (this.myColor === Color.Black) {
+      this.myColor = Color.White;
+    } else {
+      this.myColor = Color.Black;
+    }
+  }
 }
