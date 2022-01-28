@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { Color } from "../game/GameData";
+  import ConnectionDetails from "./ConnectionDetails.svelte";
+  import Toggle from "../ui/Toggle.svelte";
 
+  import { Color } from "../game/GameData";
   import { Connection } from "../connection/Connection";
   import { Client, Multiplayer, Game } from "../stores";
-  import ConnectionDetails from "./ConnectionDetails.svelte";
-  import { Who } from "../game/MultiplayerHandler";
-  import Toggle from "../ui/toggle.svelte";
 
   let createdPeer = false;
   let open: Promise<string>;
